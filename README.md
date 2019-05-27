@@ -1,4 +1,4 @@
-# Securing the IoT end-to-end
+# Connected Factory
 Fabrikam, Inc. creates innovated IoT solutions for the oil and gas manufacturing industry. It is beginning work on a new, predictive maintenance solution that targets rod pumps (the iconic pivoting pumps that dot oil fields around the world). With their solution in place, companies will be able to monitor and configure pump settings and operations remotely, and only send personnel onsite when necessary for repair or maintenance when the solution indicates that something has gone wrong. However, Fabrikam wants to go beyond reactive alerting- they want to want to enable the solution with the ability to *predict* problems so they can be averted before a fault occurs and damage is done.
 
 Using Machine Learning gives Fabrikam's solution the ability to analyze readings from various elements of the rod pump mechanism and sense patterns that indicate a possible impending mechanical failure or a deviation from the pump’s optimal operating conditions. In that case, the controller can modify the operating parameters of the pump to avoid or mitigate the impact of the unexpected changes. Or, if necessary, it can shut down the pump before any damage occurs and notify the company that repairs are necessary—protecting the machinery, and preventing potential environmental damage.
@@ -59,4 +59,3 @@ In this hands-on lab, you will look at implementing a predictive maintenance sol
 ## Related references
 - [MCW](https://github.com/Microsoft/MCW)
 - For the lab: Predictive maintenance solution for manufacturing, see https://azure.github.io/LearnAI_Azure_ML/
-- 
