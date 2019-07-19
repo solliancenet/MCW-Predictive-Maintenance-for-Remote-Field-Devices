@@ -82,7 +82,19 @@ To author: remove this section if you do not require environment setup instructi
 
 Duration: X minutes
 
-\[insert your custom Hands-on lab content here . . . \]
+[Azure IoT Central](https://azure.microsoft.com/en-us/services/iot-central/) is a Software as a Service (SaaS) offering from Microsoft. The aim of this service is to provide a frictionless entry into the Cloud Computing and IoT space. The core focus of many industrial companies is not on cloud computing, therefore they do not necessarily have the personnel skilled to provide guidance and to stand up a reliable and scalable infrastructure for an IoT solution. It is imperative for these types of companies to enter the IoT space not only for the cost savings associated with remote monitoring, but also to improve safety for their workers and the environment.
+
+Fabrikam is one such company that could use a helping hand entering the IoT space. They have recently invested in sensor technology on their rod pumps in the field, and they are ready to implement their cloud-based IoT Solution. Their IT department is small and unfamiliar with cloud-based IoT infrastructure; their IT budget also does not afford them the luxury of hiring a team of contractors to build out a solution for them.
+
+The Fabrikam CIO has recently heard of Azure IoT Central - this online offering will streamline the process of them getting their sensor data to the cloud, where they can monitor their equipment for failures and improve their maintenance practices and not have to worry about the underlying infrastructure. A [predictable cost model](https://azure.microsoft.com/en-us/pricing/details/iot-central/) also ensures that there are no financial surprises.
+
+
+
+### Task 1: Model the telemetry data
+
+The first task is to identify the data that the equipment will be sending to the cloud. This data will contain fields that represent the data read from the sensors at a specific instant in time. This data will be used downstream systems to identify patterns that can lead to cost savings, increased safety and more efficient work processes.
+
+The telemetry being reported by the Fabrikam rod pumps are as follows, we will be using this information later in the lab:
 
 #### Telemetry Schema
 | Field                | Type     | Description                                                                                                                                                                                                                                                                    |
@@ -90,69 +102,112 @@ Duration: X minutes
 | SerialNumber         | String   | Unique serial number identifying the rod pump equipment                                                                                                                                                                                                                        |
 | IPAddress            | String   | Current IP Address                                                                                                                                                                                                                                                             |
 | TimeStamp            | DateTime | Timestamp in UTC identifying the point in time the telemetry was created                                                                                                                                                                                                       |
-| SPMtoHzRatio         | Numeric  | Ratio of crank arm SPM to drive output frequency in Hz. Unit (SPM/Hz)                                                                                                                                                                                                          |
 | PumpRate             | Numeric  | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0                                                                                             |
-| FluidHeightCasing    | Numeric  | Measured in Feet (ft)                                                                                                                                                                                                                                                          |
-| PumpIntakePressure   | Numeric  | Measured in Pounds per Square Inch (psi)                                                                                                                                                                                                                                       |
-| FluidLoad            | Numeric  | Measured in Pounds (lbs)                                                                                                                                                                                                                                                       |
 | TimePumpOn           | Numeric  | Number of minutes the pump has been on                                                                                                                                                                                                                                         |
-| BeltSlip             | Numeric  | The percentage difference between the speed measured by the drive (motor speed) and the pump speed measured by the proximity sensor (crank arm speed), Units (%) - minimum -1000.0, maximum +1,000.0   (est. alerm threshold 8%)                                                                        |
-| Imbalance            | Numeric  | The percentage difference between the counter weight and the rod string weight (maximum upstroke torque and the maximum downstroke torque). A negative value indicates the counterbalance weight is greater than the rod strength. Units (%), minimum -1000.0, maximum +1000.0 - Counterbalance = 100% * (Maximum Upstroke Torque - Maximum Downstroke Torque) / Rated Torque |
-| LoadCell             | Numeric  | Load cell reading in lbs, minimum 0, maximum 60,000                                                                                                                                                                                                                            |
-| MotorCurrent         | Numeric  | Measured in Amps (A)                                                                                                                                                                                                                                                           |
-| MotorVoltage         | Numeric  | Measured in Volts (V)                                                                                                                                                                                                                                                          |
-| MotorPowerHP         | Numeric  | Measured in Horse Power (HP)                                                                                                                                                                                                                                                   |
 | MotorPowerkW         | Numeric  | Measured in Kilowatts (kW)                                                                                                                                                                                                                                                     |
 | MotorSpeed           | Numeric  | including slip (RPM)                                                                                                                                                                                                                                                           |
-| PolishedRodPower | Numeric | Peak polished rod horsepower (HP) |
-| PumpPower | Numeric | Measured in horsepower (HP) |
-| EnergyConsumption    | Numeric  | Measured in Kilowatt Hours (kWh)                                                                                                                                                                                                                                               |
-| LoadCellForce        | Numeric  | Measured in Pounds (lbs)                                                                                                                                                                                                                                                       |
-| DriveOutputTorque    | Numeric  | Torque Output (%) (est. min. 1.8, target 18.0, threshold high 300%)                                                                                                                                                                                                                                                             |
-| StuffingBoxFriction  | Numeric  | Friction load from the stuffing box (lbs)                                                                                                                                                                                                                                      |
-| TubingFriction       | Numeric  | Measured in PSI (psi)                                                                                                                                                                                                                                                          |
-| CasingFriction       | Numeric  | Measured in PSI (psi)                                                                                                                                                                                                                                                          |
-| DriveOutputFrequency | Numeric  | Measured in Hertz (Hz)                                                                                                                                                                                                                                                         |
-| DriveOutputCurrent   | Numeric  | Measured in Amps (A)                                                                                                                                                                                                                                                           |
-| FillPercentDownhole | Numeric | Downhole fillage in percent (%) (est. min. 10.0, target 150.0) |
-| FillPercentSurface | Numeric | Surface fillage in percent (%) (est. min. 10.0, target 121.0) |
-| StrokeLengthSurface | Numeric | Measured in inches (in) |
-| StrokeLengthDownhole | Numeric | Measured in inches (in) |
-| LoadCellSensorAvailable | Bool | True if the sensor is responsive, false otherwise |
-| ProximitySensorAvailable | Bool | True if the sensor is responsive, false otherwise |
+| CasingFriction       | Numeric  | Measured in PSI (psi)                                                                                                                                                   |
 
-[reference](https://download.schneider-electric.com/files?p_enDocType=User+guide&p_File_Name=Realift+RPC+plus+Config+Manual.pdf&p_Doc_Ref=Realift_RPC_Config_Manual)
+### Task 2: Create an IoT Central Application
 
-### Task 1: Task name
+1.  Access the (Azure IoT Central)[https://azure.microsoft.com/en-us/services/iot-central/] website.
 
-1.  Number and insert your custom workshop content here . . . 
+2.  Press the *Get started* button 
 
-    a.  Insert content here
+    ![Getting started](../Media/azure-iot-central-website.png)
 
-        i.  
+3.   If you are not currently logged in, you will be prompted to log in with your Microsoft Azure Account
 
-### Task 2: Task name
+4.   Press the *New Application* button
 
-1.  Number and insert your custom workshop content here . . . 
+        ![New Application](../Media/azure-iot-central-new-application.png)
 
-    a.  Insert content here
+5.   Fill the provisioning form
+        
+        ![Provision application form](../Media/custom-app-creation-form.png)
 
-        i.  
+        a. *Payment Plan* - feel free to choose either the 7 day trial or the Pay as you Go option.
+
+        b.  *Application Template* - select *Custom Application*
+
+        c.  *Application Name* - give your application a name of your choice, in this example, we used *fabrikam-oil*
+
+        d.  *Url* - this will be the URL for your application, it needs to be globally unique.
+
+        e. Fill out your contact information (First Name, Last Name, Email Address, Phone Number, Country)
+
+        f. Press the *Create* button to provision your application
+
+### Task 3: Create the Device Template
+
+1.   Once the application has been provisioned, we need to define the type of equipment we are using, and the data associated with the equipment. In order to do this we must define a *Device Template*. Press either the *Create Device Templates* button, or the *Device Templates* menu item from the left-hand menu.
+
+        ![Device Templates](../Media/create-device-templates.png)
+
+2. Select *Custom* to define our own type of hardware
+
+    ![Custom Template](../Media/new-template-custom.png)
+
+3.   For the device template name, enter *Rod Pump*, then press the *Create* button.
+        ![Create Rod Pump Template](../Media/rod-pump-template-create.png)
+
+4.   The next thing we need to do is define the measurements that will be received from the device. To do this, press the *New* button at the top of the left-hand menu.
+
+        ![New Measurement](../Media/new-measurement.png)
+
+5.  From the context menu, select *Telemetry*
+
+    ![New Telemetry Measurement](../Media/new-telemetry-measurement.png)
+
+6.  Create Telemetry values as follows:
+        ![Telemetry Data](../Media/telemetry-data.png)
 
 
+| Display Name    | Field Name     | Units   | Min. Value | Max. Value | Decimal Places |
+|-----------------|----------------|---------|------------|------------|----------------|
+| Pump Rate       | PumpRate       | SPM     | 0          | 100        | 1              |
+| Time Pump On    | TimePumpOn     | Minutes | 0          |            | 2              |
+| Motor Power     | MotorPowerKw   | kW      | 0          | 90         | 2              |
+| Motor Speed     | MotorSpeed     | RPM     | 0          | 300        | 0              |
+| Casing Friction | CasingFriction | PSI     | 0          | 1600       | 2              |
+![Telemetry Defined](../Media/telemetry-defined.png)
+
+7. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number and IP Address. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
+        ![Device Properties Menu](../Media/device-properties-menu.png)
+
+8. Define the device properties as follows:
+     ![Device Properties Form](../Media/device-properties-form.png)
+
+| Display Name  | Field Name   | Data Type | Description                       |
+|---------------|--------------|-----------|-----------------------------------|
+| Serial Number | SerialNumber | text      | The Serial Number of the rod pump |
+| IP Address    | IPAddress    | text      | The IP address of the rod pump    |
+
+![Properties Completed](../Media/properties-complete.png) 
+
+9. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
+        ![Line Chart](../Media/line-chart.png)
+        ![Line Chart Form](../Media/line-chart-form.png)
+        ![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
+
+10. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
+        ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
+
+11. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
+        ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
+        ![Simulated Measurements](../Media/simulated-measurements.png)
+
+### Task 4 - Create and provision a real device
+                
 ## Exercise 2: Exercise name
 
 Duration: X minutes
 
-\[insert your custom Hands-on lab content here . . . \]
+\[insert your custom Hands-on lab content here . . .\]
 
 ### Task 1: Task name
 
-1.  Number and insert your custom workshop content here . . . 
-
-    a.  Insert content here
-
-        i.  
+1.  
 
 ### Task 2: Task name
 
