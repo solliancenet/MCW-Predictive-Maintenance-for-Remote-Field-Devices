@@ -142,24 +142,26 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 1.   Once the application has been provisioned, we need to define the type of equipment we are using, and the data associated with the equipment. In order to do this we must define a *Device Template*. Press either the *Create Device Templates* button, or the *Device Templates* menu item from the left-hand menu.
 
-        ![Device Templates](../Media/create-device-templates.png)
+![Device Templates](../Media/create-device-templates.png)
 
 2. Select *Custom* to define our own type of hardware
 
-    ![Custom Template](../Media/new-template-custom.png)
+![Custom Template](../Media/new-template-custom.png)
 
 3.   For the device template name, enter *Rod Pump*, then press the *Create* button.
-        ![Create Rod Pump Template](../Media/rod-pump-template-create.png)
+
+![Create Rod Pump Template](../Media/rod-pump-template-create.png)
 
 4.   The next thing we need to do is define the measurements that will be received from the device. To do this, press the *New* button at the top of the left-hand menu.
 
-        ![New Measurement](../Media/new-measurement.png)
+![New Measurement](../Media/new-measurement.png)
 
 5.  From the context menu, select *Telemetry*
 
-    ![New Telemetry Measurement](../Media/new-telemetry-measurement.png)
+![New Telemetry Measurement](../Media/new-telemetry-measurement.png)
 
 6.  Create Telemetry values as follows:
+
         ![Telemetry Data](../Media/telemetry-data.png)
 
 
@@ -173,10 +175,12 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 ![Telemetry Defined](../Media/telemetry-defined.png)
 
 7. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number and IP Address. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
-        ![Device Properties Menu](../Media/device-properties-menu.png)
+        
+![Device Properties Menu](../Media/device-properties-menu.png)
 
 8. Define the device properties as follows:
-     ![Device Properties Form](../Media/device-properties-form.png)
+
+![Device Properties Form](../Media/device-properties-form.png)
 
 | Display Name  | Field Name   | Data Type | Description                       |
 |---------------|--------------|-----------|-----------------------------------|
@@ -186,18 +190,59 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 ![Properties Completed](../Media/properties-complete.png) 
 
 9. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
-        ![Line Chart](../Media/line-chart.png)
-        ![Line Chart Form](../Media/line-chart-form.png)
-        ![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
+
+![Line Chart](../Media/line-chart.png)
+
+![Line Chart Form](../Media/line-chart-form.png)
+
+![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
 
 10. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
-        ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
+
+![Device Template Thumbnail](../Media/device-template-thumbnail.png)
 
 11. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
-        ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
-        ![Simulated Measurements](../Media/simulated-measurements.png)
+
+![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
+
+![Simulated Measurements](../Media/simulated-measurements.png)
 
 ### Task 4 - Create and provision a real device
+
+Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Service (DPS)](https://docs.microsoft.com/en-us/azure/iot-dps/). The aim of DPS is to provide a consistent way to connect devices to the Azure Cloud. Devices can utilize Shared Access Signatures, or X.509 certificates to securely connect to IoT Central.
+
+### Task 1: Register the Device in IoT Central
+
+[Multiple options](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity) exist to register devices in IoT Central, ranging from individual device registration to [bulk device registration](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity#connect-devices-at-scale-using-sas) via a comma delimited file. In this lab we will register a single device using SAS.
+
+1. In the left-hand menu of your IoT Central application, select *Device Explorer*.
+
+2. Select the *Rod Pump (1.0.0)* template. This will now show the list of existing devices which at this time includes only the simulated device.
+
+3. Click the *+* button to add a new device, select *Real*.
+
+![Add a real device menu](../Media/add-real-device-menu.png)
+
+4. A modal window will be displayed with an automatically generated Device ID and Device Name. Feel free to edit these values to match your back-end systems. Make note of these values, and press the *Create* button.
+
+![Real Device ID and Name](../Media/real-device-id.png)
+
+5. Once the device has been created, press the *Connect* button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
+
+![Device Connection Info](../Media/device-connection-info.png)
+
+6. Utilizing one of the keys from the values you recorded in #5 we will be generating a SAS key to use in the source code running on the device. We will generate a SAS key using command line tooling. Ensure you have Node v.8+ installed, open a command prompt, and execute the following:
+
+```
+npm i -g dps-keygen
+```
+
+Next, generate the SAS key
+
+```
+dps-keygen -mk:<primary key value> -di:<device id>
+```
+
                 
 ## Exercise 2: Exercise name
 
