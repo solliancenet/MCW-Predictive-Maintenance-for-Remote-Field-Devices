@@ -202,7 +202,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Add Command](../Media/device-template-add-command.png)
 
-12.  Create a command as follows:
+12.  Create a command as follows, and press *save*:
         
         a. *Display Name* - *Toggle Motor Power*
         b. *Field Name* - *MotorPower*
