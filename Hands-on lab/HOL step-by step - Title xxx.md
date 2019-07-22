@@ -162,7 +162,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 6.  Create Telemetry values as follows:
 
-        ![Telemetry Data](../Media/telemetry-data.png)
+![Telemetry Data](../Media/telemetry-data.png)
 
 
 | Display Name    | Field Name     | Units   | Min. Value | Max. Value | Decimal Places |
@@ -172,13 +172,22 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 | Motor Power     | MotorPowerKw   | kW      | 0          | 90         | 2              |
 | Motor Speed     | MotorSpeed     | RPM     | 0          | 300        | 0              |
 | Casing Friction | CasingFriction | PSI     | 0          | 1600       | 2              |
+
 ![Telemetry Defined](../Media/telemetry-defined.png)
 
-7. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number and IP Address. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
+7. Remaining on the measurement tab - we also need to define the current state of the pump, whether it is running or not. Press *New* and select *State*.
+
+![Add State](../Media/device-template-add-state.png)
+
+8. Add the state with the display name of *Power State*, field name of *PowerState* with the values *Unavailable*, *On*, and *Off* - then press the *Save* button.
+
+![Power State](../Media/power-state-definition.png)
+
+9. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number and IP Address. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
         
 ![Device Properties Menu](../Media/device-properties-menu.png)
 
-8. Define the device properties as follows:
+10. Define the device properties as follows:
 
 ![Device Properties Form](../Media/device-properties-form.png)
 
@@ -189,7 +198,21 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Properties Completed](../Media/properties-complete.png) 
 
-9. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
+11.  Operators and field workers will want to be able to turn on and off the pumps remotely. In order to do this we will define commands. Select the *Commands* tab, and press the *New* button to add a new command.
+
+![Add Command](../Media/device-template-add-command.png)
+
+12.  Create a command as follows:
+        
+        a. *Display Name* - *Toggle Motor Power*
+        b. *Field Name* - *MotorPower*
+        c. *Default Timeout* - *30*
+        d. *Data Type* - *toggle*
+        e. *Description* - *Toggle the motor power of the pump on and off*
+
+![Configure Command](../Media/template-configure-command.png)
+
+13. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
 
 ![Line Chart](../Media/line-chart.png)
 
@@ -197,11 +220,11 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
 
-10. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
+14. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
 
 ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
 
-11. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
+15. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
 
 ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
 
