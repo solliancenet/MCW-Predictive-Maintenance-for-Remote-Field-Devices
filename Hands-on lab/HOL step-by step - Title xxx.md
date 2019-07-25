@@ -277,7 +277,7 @@ Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Se
 
 5. Return to the Devices list by selecting *Devices* in the left-hand menu. Note how all three real devices have the provisioning status of *Registered*.
 
-![Real Devices Registered](../Media/real-devices-registered.png)
+![Real Devices Registered](../Media/new-devices-registered.png)
 
                 
 ## Exercise 2: Running the Rod Pump Simulator
