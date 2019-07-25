@@ -14,13 +14,14 @@ namespace Fabrikam.FieldDevice.Generator
 {
     public class PumpDevice
     {
-        private readonly TimeSpan CycleTime = TimeSpan.FromMilliseconds(250);
+        private readonly TimeSpan CycleTime = TimeSpan.FromMilliseconds(500);
         private readonly TwinCollection ReportedProperties = new TwinCollection();
         private DeviceClient _deviceClient = null;
         private int _messagesSent = 0;
         private readonly string _deviceId;
         private readonly string _serialNumber;
         private readonly string _ipAddress;
+        private readonly Location _location;
         private readonly IEnumerable<PumpTelemetryItem> _pumpTelemetryData;
 
         /// <summary>
@@ -37,11 +38,12 @@ namespace Fabrikam.FieldDevice.Generator
         /// <param name="ipAddress">The device's IP address property.</param>
         /// <param name="pumpTelemetryData">Simulated device data for the pump.</param>
         public PumpDevice(int deviceNumber, string deviceConnectionString, string serialNumber, string ipAddress,
-            IEnumerable<PumpTelemetryItem> pumpTelemetryData)
+            Location location, IEnumerable<PumpTelemetryItem> pumpTelemetryData)
         {
             _deviceId = $"Client_{deviceNumber:000}";
             _serialNumber = serialNumber;
             _ipAddress = ipAddress;
+            _location = location;
             _pumpTelemetryData = pumpTelemetryData;
             _deviceClient = DeviceClient.CreateFromConnectionString(deviceConnectionString, TransportType.Mqtt);
         }
@@ -66,6 +68,7 @@ namespace Fabrikam.FieldDevice.Generator
                 Console.WriteLine($"Sending device properties to {_deviceId}:");
                 ReportedProperties["SerialNumber"] = _serialNumber;
                 ReportedProperties["IPAddress"] = _ipAddress;
+                ReportedProperties["Location"] = _location;
                 Console.WriteLine(JsonConvert.SerializeObject(ReportedProperties));
 
                 await _deviceClient.UpdateReportedPropertiesAsync(ReportedProperties);

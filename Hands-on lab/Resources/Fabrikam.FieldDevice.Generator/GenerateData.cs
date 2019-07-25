@@ -22,8 +22,8 @@ namespace Fabrikam.FieldDevice.Generator
         public static IEnumerable<PumpTelemetryItem> GeneratePumpTelemetry(int sampleSize = 500, bool causeFailure = true,
             int failOverXIterations = 250)
         {
-            // If causing a failure, set the good sample size to 1/4.
-            var normalSampleSize = causeFailure ? sampleSize / 4 : sampleSize;
+            // If causing a failure, set the good sample size to 1/8.
+            var normalSampleSize = causeFailure ? sampleSize / 8 : sampleSize;
 
             // Generate normal pump operation:
             var motorPowerkW = Generate.Sinusoidal(normalSampleSize, PumpNormalState.MotorPowerkW.SamplingRate, PumpNormalState.MotorPowerkW.Frequency, PumpNormalState.MotorPowerkW.Amplitude, RandomizeInitialValue(PumpNormalState.MotorPowerkW.InitialValue));

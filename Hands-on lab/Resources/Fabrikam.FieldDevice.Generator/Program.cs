@@ -33,7 +33,7 @@ namespace Fabrikam.FieldDevice.Generator
             var cancellationToken = cancellationSource.Token;
 
             WriteLineInColor("Pump Telemetry Generator", ConsoleColor.White);
-            Console.WriteLine("======");
+            Console.WriteLine("=============");
             WriteLineInColor("** Enter 1 to generate and send pump device telemetry to IoT Central.", ConsoleColor.Green);
             WriteLineInColor("** Enter 2 to generate anomaly model training data in CSV files.", ConsoleColor.Green);
             Console.WriteLine("=============");
@@ -71,9 +71,17 @@ namespace Fabrikam.FieldDevice.Generator
             switch (userInput)
             {
                 case "1":
-                    // Start sending telemetry to simulated devices:
-                    var deviceRunTasks = SetupDeviceRunTasks(cancellationToken);
-                    Task.WhenAll(deviceRunTasks).Wait(cancellationToken);
+                    try
+                    {
+                        // Start sending telemetry to simulated devices:
+                        var deviceRunTasks = SetupDeviceRunTasks(cancellationToken);
+                        Task.WhenAll(deviceRunTasks).Wait(cancellationToken);
+                    }
+                    catch (OperationCanceledException canceled)
+                    {
+                        Console.WriteLine("The device telemetry operation was canceled.");
+                        // No need to throw, as this was expected.
+                    }
                     break;
                 case "2":
                     GenerateTrainingData();
@@ -108,7 +116,7 @@ namespace Fabrikam.FieldDevice.Generator
             GenerateData.GenerateModelTrainingData(sampleSize, true, 0, false, true);
             // Generate with gradual failures:
             Console.WriteLine("\r\nGenerating data with gradual failures...");
-            GenerateData.GenerateModelTrainingData(sampleSize, true, 2500, false, true);
+            GenerateData.GenerateModelTrainingData(sampleSize, true, 625, false, true);
 
             Console.WriteLine("\r\n---------------------------\r\nGeneration complete.");
         }
@@ -128,11 +136,14 @@ namespace Fabrikam.FieldDevice.Generator
             Console.WriteLine("Setting up simulated pump devices and generating random sample data. This may take a while...");
 
             // Add a pump that gradually fails.
-            devices.Add(new PumpDevice(1, config.Device1ConnectionString, "DEVICE001", "192.168.1.1", GenerateData.GeneratePumpTelemetry(sampleSize, true, failOverXIterations)));
+            devices.Add(new PumpDevice(1, config.Device1ConnectionString, "DEVICE001", "192.168.1.1", new Location(35.815090, -101.043192), 
+                GenerateData.GeneratePumpTelemetry(sampleSize, true, failOverXIterations)));
             // Add a pump that never fails.
-            devices.Add(new PumpDevice(2, config.Device2ConnectionString, "DEVICE002", "192.168.1.2", GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, false, 0)));
+            devices.Add(new PumpDevice(2, config.Device2ConnectionString, "DEVICE002", "192.168.1.2", new Location(35.815862, -101.042167),
+                GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, false, 0)));
             // Add a pump that immediately fails after a period of time.
-            devices.Add(new PumpDevice(3, config.Device3ConnectionString, "DEVICE003", "192.168.1.3", GenerateData.GeneratePumpTelemetry(sampleSize, true, 0)));
+            devices.Add(new PumpDevice(3, config.Device3ConnectionString, "DEVICE003", "192.168.1.3", new Location(35.815743, -101.048099),  
+                GenerateData.GeneratePumpTelemetry(sampleSize, true, 0)));
 
             foreach (var device in devices)
             {
