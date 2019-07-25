@@ -206,22 +206,20 @@ They would like to understand their options for expediting the implementation of
 
 ### Customer needs
 
-1. They need web based access to metadata management
-2. They need configurable dashboards
-3. They need collection and export of real-time telemetry
-4. They need security
-
+1. We are interested in comparing SaaS and PaaS-based offerings on Azure. Based on our needs, will a SaaS solution meet our needs for a rapid PoC?
+2. Need web-based access to metadata management of the rod pump devices for simplified management by our users.
+3. When we expand beyond the PoC, we need to be able to add devices in bulk for our customers.
+4. We would like to have configurable standard dashboards for all users and personalized dashboards.
+5. Need collection and export of real-time telemetry, at scale. There should be an intuitive interface for analyzing collected data as it arrives, or within timelines to include historical information.
+6. Require strong device security with encryption at transit and at rest, as well as ample cloud-based security and user management.
+7. We want to configure alerts when sensor data reaches certain thresholds so engineers can take action and send remote commands to pump controllers to prevent damage due to mechanical failure. Alert options should be flexible for choosing a destination and executing automated tasks.
 
 ### Customer objections
 
-1. Is there an out of the box solution they can use to jumpstart the creation of the solution?
-2. Can this solution enable their data scientists to leverage their expertise to build custom models against timeseries telemetry, and to plug their models into the near-real time streams collected by the solution?
-3. How would data engineers get at rod pump streaming telemetry?
-4. How can data engineers collect historical streaming telemetry for use in modeling by the data scientists?
-5. What service would the data scientists use for training their model that could support the potentially large scale?
-6. How could data scientists plug their model into a real-time predictive analytics pipeline to detect potential failures?
-7. How would alerts be generated and delivered when the model predicts a failure?
-8. How can the operators view the current status of the rod pumps in a single dashboard?
+1. Is there an out of the box solution we can use to jump-start the creation of the solution?
+2. We are worried about being constrained by a "black box" if we go with a SaaS solution. Do we have access to all of our collected telemetry we can use for external workloads?
+3. How would alerts be generated and delivered when the automated monitoring predicts a failure? What integration options do we have?
+4. How can the operators view the current status of the rod pumps in a single dashboard?
 
 ### Infographic for common scenarios
 
@@ -249,23 +247,53 @@ Directions: With all participants at your table, respond to the following questi
 
 _High-level architecture_
 
-1.  Without getting into the details (the following sections will address the particular details), diagram your initial vision for ...
+1. Without getting into the details (the following sections will address the particular details), diagram your initial vision for using a SaaS-based IoT solution on Azure with device management, custom dashboards, user management, real-time telemetry capture, analysis, and export. If you can, include the underlying architecture of the SaaS solution by identifying its major components.
 
-_IoT Central_
+_IoT options in Azure_
 
-...
+1. What are the SaaS-based IoT options in Azure?
 
-_Metadata Management_
+2. What are the PaaS-based IoT options in Azure?
 
-...
+3. Would you recommend SaaS or PaaS for this customer situation? What are the pros and cons of each?
 
-_Dashboards_
+_Device and metadata management_
 
-...
+1. How do you connect devices one at a time?
+
+2. How do you connect multiple devices at scale?
+
+3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to automatically connect to the cloud when turned on, or do they all have to be registered during installation?
+
+4. What communication protocols are supported? What if they are using devices that do not support those protocols?
+
+5. Is there a way to define common metadata for devices, such as location and serial number? How is this metadata applied to devices, and how can developers set this metadata programmatically?
+
+6. How can control messages be sent to rod pump controllers from the cloud to perform tasks like turn off the pump engine or change settings?
+
+_Dashboards and telemetry analysis_
+
+1. How would you propose Fabrikam create visualizations for each rod pump?
+
+2. How can they create shared dashboards, and can users create their own personalized dashboards?
+
+3. What options are available to view and filter device telemetry?
+
+4. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
 
 _Security_
 
-...
+1. Is device data encrypted both in transit and at rest?
+
+2. Can Fabrikam use standard certificates for device authentication? How do Fabrikam's administrators approve new devices that attempt to connect to the cloud?
+
+3. What user management options are available for the dashboards? What roles are defined?
+
+_Alerts and integrations_
+
+1. Fabrikam wants to use their knowledge of rod pump component operating parameters and proactively monitor telemetry for immediate or impending failure. How can they set thresholds for sensor data and trigger alerts when those thresholds are crossed?
+
+2. What options can they use to send alerts? They are interested in available integrations that may work with services they already use, like Office 365 or Dynamics CRM.
 
 **Prepare**
 
