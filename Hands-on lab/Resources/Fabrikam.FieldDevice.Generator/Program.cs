@@ -116,7 +116,7 @@ namespace Fabrikam.FieldDevice.Generator
             GenerateData.GenerateModelTrainingData(sampleSize, true, 0, false, true);
             // Generate with gradual failures:
             Console.WriteLine("\r\nGenerating data with gradual failures...");
-            GenerateData.GenerateModelTrainingData(sampleSize, true, 625, false, true);
+            GenerateData.GenerateModelTrainingData(sampleSize, true, 2500, false, true);
 
             Console.WriteLine("\r\n---------------------------\r\nGeneration complete.");
         }
@@ -131,7 +131,7 @@ namespace Fabrikam.FieldDevice.Generator
             var deviceTasks = new List<Task>();
             var config = ParseConfiguration();
             const int sampleSize = 10000;
-            const int failOverXIterations = 2500;
+            const int failOverXIterations = 625;
 
             Console.WriteLine("Setting up simulated pump devices and generating random sample data. This may take a while...");
 
@@ -143,7 +143,7 @@ namespace Fabrikam.FieldDevice.Generator
                 GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, false, 0)));
             // Add a pump that immediately fails after a period of time.
             devices.Add(new PumpDevice(3, config.Device3ConnectionString, "DEVICE003", "192.168.1.3", new Location(35.815743, -101.048099),  
-                GenerateData.GeneratePumpTelemetry(sampleSize, true, 0)));
+                GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, true, 0)));
 
             foreach (var device in devices)
             {
