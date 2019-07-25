@@ -128,14 +128,15 @@ namespace Fabrikam.FieldDevice.Generator
             Console.WriteLine("Setting up simulated pump devices and generating random sample data. This may take a while...");
 
             // Add a pump that gradually fails.
-            devices.Add(new PumpDevice(1, config.Device1ConnectionString, "DEVICE001", "0.0.0.0", GenerateData.GeneratePumpTelemetry(sampleSize, true, failOverXIterations)));
+            devices.Add(new PumpDevice(1, config.Device1ConnectionString, "DEVICE001", "192.168.1.1", GenerateData.GeneratePumpTelemetry(sampleSize, true, failOverXIterations)));
             // Add a pump that never fails.
-            devices.Add(new PumpDevice(2, config.Device2ConnectionString, "DEVICE002", "0.0.0.0", GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, false, 0)));
+            devices.Add(new PumpDevice(2, config.Device2ConnectionString, "DEVICE002", "192.168.1.2", GenerateData.GeneratePumpTelemetry(sampleSize + failOverXIterations, false, 0)));
             // Add a pump that immediately fails after a period of time.
-            devices.Add(new PumpDevice(3, config.Device3ConnectionString, "DEVICE003", "0.0.0.0", GenerateData.GeneratePumpTelemetry(sampleSize, true, 0)));
+            devices.Add(new PumpDevice(3, config.Device3ConnectionString, "DEVICE003", "192.168.1.3", GenerateData.GeneratePumpTelemetry(sampleSize, true, 0)));
 
             foreach (var device in devices)
             {
+                device.SendDeviceProperties();
                 deviceTasks.Add(device.RunDeviceAsync(cancellationToken));
             }
 
