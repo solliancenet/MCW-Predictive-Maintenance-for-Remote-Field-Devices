@@ -147,7 +147,7 @@ namespace Fabrikam.FieldDevice.Generator
     {
         public PumpTelemetryItemMap()
         {
-            Map(m => m.MotorPowerkW).Index(0);
+            Map(m => m.MotorPowerKw).Index(0);
             Map(m => m.MotorSpeed).Index(1);
             Map(m => m.PumpRate).Index(2);
             Map(m => m.TimePumpOn).Index(3);

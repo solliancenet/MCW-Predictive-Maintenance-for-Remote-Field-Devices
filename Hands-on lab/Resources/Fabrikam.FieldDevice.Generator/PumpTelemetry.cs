@@ -7,7 +7,7 @@ namespace Fabrikam.FieldDevice.Generator
 {
     public class PumpTelemetry
     {
-        public IEnumerable<double> MotorPowerkW { get; set; }
+        public IEnumerable<double> MotorPowerKw { get; set; }
         public IEnumerable<double> MotorSpeed { get; set; }
         public IEnumerable<double> PumpRate { get; set; }
         public IEnumerable<double> TimePumpOn { get; set; }
@@ -22,7 +22,7 @@ namespace Fabrikam.FieldDevice.Generator
             IEnumerable<double> casingFriction)
         {
             var transformed = TransformValues(motorPowerkW, motorSpeed, pumpRate, timePumpOn, casingFriction);
-            MotorPowerkW = transformed.MotorPowerkW;
+            MotorPowerKw = transformed.MotorPowerkW;
             MotorSpeed = transformed.MotorSpeed;
             PumpRate = transformed.PumpRate;
             TimePumpOn = transformed.TimePumpOn;
@@ -35,11 +35,11 @@ namespace Fabrikam.FieldDevice.Generator
         /// <returns></returns>
         public IEnumerable<PumpTelemetryItem> ToPumpTelemetryItems()
         {
-            var numItems = MotorPowerkW.Count();
+            var numItems = MotorPowerKw.Count();
             var telemetryItems = new List<PumpTelemetryItem>(numItems);
             for (var i = 0; i < numItems; i++)
             {
-                telemetryItems.Add(new PumpTelemetryItem(MotorPowerkW.ElementAt(i), MotorSpeed.ElementAt(i),
+                telemetryItems.Add(new PumpTelemetryItem(MotorPowerKw.ElementAt(i), MotorSpeed.ElementAt(i),
                     PumpRate.ElementAt(i), TimePumpOn.ElementAt(i), CasingFriction.ElementAt(i)));
             }
 
@@ -154,7 +154,7 @@ namespace Fabrikam.FieldDevice.Generator
                 }
 
                 // Concatenate the normal, gradual failure, and failure items and save to the class properties.
-                MotorPowerkW = normal.MotorPowerkW.Concat(motorPowerkWGradualFailure).Concat(failed.MotorPowerkW);
+                MotorPowerKw = normal.MotorPowerkW.Concat(motorPowerkWGradualFailure).Concat(failed.MotorPowerkW);
                 MotorSpeed = normal.MotorSpeed.Concat(motorSpeedGradualFailure).Concat(failed.MotorSpeed);
                 PumpRate = normal.PumpRate.Concat(pumpRateGradualFailure).Concat(failed.PumpRate);
                 TimePumpOn = normal.TimePumpOn.Concat(timePumpOnGradualFailure).Concat(failed.TimePumpOn);
@@ -164,7 +164,7 @@ namespace Fabrikam.FieldDevice.Generator
             else
             {
                 // Concatenate the normal and failure items for immediate failure, and save to the class properties.
-                MotorPowerkW = normal.MotorPowerkW.Concat(failed.MotorPowerkW);
+                MotorPowerKw = normal.MotorPowerkW.Concat(failed.MotorPowerkW);
                 MotorSpeed = normal.MotorSpeed.Concat(failed.MotorSpeed);
                 PumpRate = normal.PumpRate.Concat(failed.PumpRate);
                 TimePumpOn = normal.TimePumpOn.Concat(failed.TimePumpOn);

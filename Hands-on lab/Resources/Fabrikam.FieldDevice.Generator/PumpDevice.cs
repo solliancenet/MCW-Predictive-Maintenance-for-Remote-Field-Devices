@@ -14,9 +14,9 @@ namespace Fabrikam.FieldDevice.Generator
 {
     public class PumpDevice
     {
-        private static readonly TimeSpan CycleTime = TimeSpan.FromMilliseconds(250);
-        private static readonly TwinCollection ReportedProperties = new TwinCollection();
-        private static DeviceClient _deviceClient = null;
+        private readonly TimeSpan CycleTime = TimeSpan.FromMilliseconds(250);
+        private readonly TwinCollection ReportedProperties = new TwinCollection();
+        private DeviceClient _deviceClient = null;
         private int _messagesSent = 0;
         private readonly string _deviceId;
         private readonly string _serialNumber;

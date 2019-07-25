@@ -2,7 +2,7 @@
 {
     public class PumpTelemetryItem
     {
-        public double MotorPowerkW { get; set; }
+        public double MotorPowerKw { get; set; }
         public double MotorSpeed { get; set; }
         public double PumpRate { get; set; }
         public double TimePumpOn { get; set; }
@@ -11,7 +11,7 @@
         public PumpTelemetryItem(double motorPowerkW, double motorSpeed,
             double pumpRate, double timePumpOn, double casingFriction)
         {
-            MotorPowerkW = motorPowerkW;
+            MotorPowerKw = motorPowerkW;
             MotorSpeed = motorSpeed;
             PumpRate = pumpRate;
             TimePumpOn = timePumpOn;
