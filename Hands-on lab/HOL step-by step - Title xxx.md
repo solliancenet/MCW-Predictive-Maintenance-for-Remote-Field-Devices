@@ -249,11 +249,9 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Simulated Measurements](../Media/simulated-measurements.png)
 
-### Task 4 - Create and provision real devices
+### Task 4: Create and provision real devices
 
 Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Service (DPS)](https://docs.microsoft.com/en-us/azure/iot-dps/). The aim of DPS is to provide a consistent way to connect devices to the Azure Cloud. Devices can utilize Shared Access Signatures, or X.509 certificates to securely connect to IoT Central.
-
-### Task 1: Register the Device in IoT Central
 
 [Multiple options](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity) exist to register devices in IoT Central, ranging from individual device registration to [bulk device registration](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity#connect-devices-at-scale-using-sas) via a comma delimited file. In this lab we will register a single device using SAS.
 
