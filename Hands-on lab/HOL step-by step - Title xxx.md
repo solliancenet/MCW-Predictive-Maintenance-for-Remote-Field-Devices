@@ -212,7 +212,26 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Configure Command](../Media/template-configure-command.png)
 
-13. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
+13. Let's now define some Rules that will monitor the incoming telemetry data. Select the *Rules* tab, press the *New* button, and select *Telemetry*.
+
+![New Telemetry Rule](../Media/rules-new-telemetry.png)
+
+14. Create Telemetry rules as follows (we will defer rule actions until later in the lab):
+
+![Telemetry Rule Form](../Media/define-new-rule.png)
+
+| Name                           | Condition # | Measurement     | Aggregation | Agg. Time Window | Operator        | Threshold |
+|--------------------------------|-------------|-----------------|-------------|------------------|-----------------|-----------|
+| Abnormal Motor Power (kW)      | 1           | Motor Power     | Average     | 5 minutes        | is less than    | 30        |
+|                                | 2           | Motor Power     | Average     | 5 mintues        | is greater than | 100       |
+| Abnormal Motor Speed (RPM)     | 1           | Motor Speed     | Average     | 5 minutes        | is less than    | 80        |
+|                                | 2           | Motor Speed     | Average     | 5 minutes        | is greater than | 300       |
+| Abnormal Casing Friction (PSI) | 1           | Casing Friction | Average     | 5 minutes        | is less than    | 800       |
+|                                | 2           | Casing Friction | Average     | 5 minutes        | is greater than | 1800      |
+| Abnormal Pump Rate (SPM)            | 1           | Pump Rate       | Average     | 5 minutes        | is less than    | 10        |
+|                                | 2           | Pump Rate       | Average     | 5 minutes        | is greater than | 80        |
+
+15. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
 
 ![Line Chart](../Media/line-chart.png)
 
@@ -220,21 +239,19 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
 
-14. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
+16. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
 
 ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
 
-15. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
+17. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
 
 ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
 
 ![Simulated Measurements](../Media/simulated-measurements.png)
 
-### Task 4 - Create and provision a real device
+### Task 4: Create and provision real devices
 
 Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Service (DPS)](https://docs.microsoft.com/en-us/azure/iot-dps/). The aim of DPS is to provide a consistent way to connect devices to the Azure Cloud. Devices can utilize Shared Access Signatures, or X.509 certificates to securely connect to IoT Central.
-
-### Task 1: Register the Device in IoT Central
 
 [Multiple options](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity) exist to register devices in IoT Central, ranging from individual device registration to [bulk device registration](https://docs.microsoft.com/en-us/azure/iot-central/concepts-connectivity#connect-devices-at-scale-using-sas) via a comma delimited file. In this lab we will register a single device using SAS.
 
@@ -246,44 +263,77 @@ Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Se
 
 ![Add a real device menu](../Media/add-real-device-menu.png)
 
-4. A modal window will be displayed with an automatically generated Device ID and Device Name. Feel free to edit these values to match your back-end systems. Make note of these values, and press the *Create* button.
+4. A modal window will be displayed with an automatically generated Device ID and Device Name. You are able to overwrite these values with anything that makes sense in your downstream systems. We will be creating three real devices in this lab. Create the following as real devices:
 
 ![Real Device ID and Name](../Media/real-device-id.png)
 
-5. Once the device has been created, press the *Connect* button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
+| Device ID | Device Name          |
+|-----------|----------------------|
+| DEVICE001 | Rod Pump - DEVICE001 |
+| DEVICE002 | Rod Pump - DEVICE002 |
+| DEVICE003 | Rod Pump - DEVICE003 |
+
+5. Return to the Devices list by selecting *Devices* in the left-hand menu. Note how all three real devices have the provisioning status of *Registered*.
+
+![Real Devices Registered](../Media/new-devices-registered.png)
+
+                
+## Exercise 2: Running the Rod Pump Simulator
+
+Duration: X minutes
+
+Included with this lab is source code that will simulate the connection and telemetry of three real pumps. In the previous exercise, we have defined them as DEVICE001, DEVICE002, and DEVICE003. The purpose of the simulator is to demonstrate real-world scenarios that include a normal healthy rod pump (DEVICE002), a gradually failing pump (DEVICE001), and an immediately failing pump (DEVICE003).
+
+### Task 1: Generate device connection strings
+
+1. In IoT Central, select *Devices* from the left-hand menu. Then, from the devices list, click on *Rod Pump - DEVICE001*, and press the *Connect* button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
 
 ![Device Connection Info](../Media/device-connection-info.png)
 
-6. Utilizing one of the keys from the values you recorded in #5 we will be generating a SAS key to use in the source code running on the device. We will generate a SAS key using command line tooling. Ensure you have Node v.8+ installed, open a command prompt, and execute the following:
+2. Utilizing one of the keys from the values you recorded in #5 we will be generating a connection string to be used within the source code running on the device. We will generate the connection string using command line tooling. Ensure you have Node v.8+ installed, open a command prompt, and execute the following to globally install the key generator utility:
 
 ```
 npm i -g dps-keygen
 ```
 
-Next, generate the SAS key
+![Global install of key generator utility](../Media/global-install-keyutil.png)
+
+Next, generate the connection string using the key generator utility
 
 ```
-dps-keygen -mk:<primary key value> -di:<device id>
+dps-keygen -di:<Device ID> -dk:<Primary Key> -si:<Scope ID>
 ```
+![Generated Device Key](../Media/generated-device-connectionstring.png)
 
-                
-## Exercise 2: Exercise name
+Make note of the connection string for the device.
 
-Duration: X minutes
+3. Repeat steps 1 and 2 for DEVICE002 and DEVICE003 
 
-\[insert your custom Hands-on lab content here . . .\]
+### Task 2: Open the Visual Studio solution, and update connection string values
 
-### Task 1: Task name
+1.  Using Visual Studio 2019, open the /Hands-on lab/Resources/Fabrikam.FieldDevice.sln solution.
 
-1.  
+2. Open *appsettings.json* and copy & paste the connection strings that you generated in Task 1 into this file.
 
-### Task 2: Task name
+![Updated appsettings.json](../Media/appsettings-updated.png)
 
-1.  Number and insert your custom workshop content here . . . 
+### Task 3: Run the application
 
-    a.  Insert content here
+1. Using Visual Studio, Debug the current application by pressing *F5*.
 
-        i.  
+2. Once the menu is displayed, select option 1 to generate and send telemetry to IoT Central
+
+![Choose to generate and send telemetry to IoT Central](../Media/generate-and-send-telemetry.png)
+
+3. Allow the simulator to start sending telemetry data to IoT Central, you will see output similar to the following:
+
+![Sample Telemetry](../Media/telemetry-data-generated.png)
+
+4. Allow the simulator to run while continuing with this lab.
+
+5. After some time has passed, in IoT Central press the *Devices* item in the left-hand menu. Note that the provisioning status of DEVICE001, DEVICE002, and DEVICE003 now indicate *Provisioned*.
+
+![Provisioned Devices](../Media/provisioned-devices.png)
 
 
 ## Exercise 3: Exercise name
