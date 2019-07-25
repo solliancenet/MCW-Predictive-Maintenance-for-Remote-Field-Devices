@@ -74,6 +74,7 @@ namespace Fabrikam.FieldDevice.Generator
                     // Start sending telemetry to simulated devices:
                     var deviceRunTasks = SetupDeviceRunTasks(cancellationToken);
                     Task.WhenAll(deviceRunTasks).Wait(cancellationToken);
+                    break;
                 case "2":
                     GenerateTrainingData();
                     break;
