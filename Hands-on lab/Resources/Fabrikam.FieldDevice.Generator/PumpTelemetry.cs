@@ -105,7 +105,7 @@ namespace Fabrikam.FieldDevice.Generator
                 var casingFrictionGradualFailure = new List<double>();
 
                 // Sawtooth degradation:
-                var sampleSize = failOverXIterations / 2;
+                var sampleSize = (failOverXIterations / 2) + 1; // Add one for rounding errors.
                 var normalToFailureFrequencyDelta =
                     PumpFailedState.TimePumpOn.Frequency - PumpNormalState.TimePumpOn.Frequency;
                 var normalToFailureAmplitudeDelta =
