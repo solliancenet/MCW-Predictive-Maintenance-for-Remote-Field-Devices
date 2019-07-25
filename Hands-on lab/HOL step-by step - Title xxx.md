@@ -339,6 +339,31 @@ Make note of the connection string for the device.
 
 ![Provisioned Devices](../Media/provisioned-devices.png)
 
+### Task 4: Interpret telemetry data
+
+DEVICE001 is the rod pump that will gradually fail. Upon running the simulator for approximately 10 minutes (or 1100 messages), you can take a look at the Motor Power chart in the Device Dashboard, or on the measurements tab and watch the power consumption decrease.
+
+1. In IoT Central, select the *Devices* menu item, then click on *Rod Pump - DEVICE001* in the Devices list.
+
+2. Ensure the *Measurements* tab is selected, then you can toggle off all telemetry values except for Motor Power so the chart will be focused solely on this telemetry property.
+
+![Focus Telemetry Chart to Motor Power](../Media/device001-focus-telemetry-chart.png)
+
+3. Observe how the Motor Power usage of DEVICE001 gradually degrades.
+
+![Motor Power usage degredation](../Media/device001-gradual-failure-power.png)
+
+4. Press the *Rules* tab, and select the alert for *Low Motor Power (kW)*, be sure to set the *Time Range* to the *Last Hour* for a higher level look at the telemetry values received. Notice how when the pump is operating normally, it is over the 30 kW line shown by the horizontal dotted line on the chart. Once the pump starts failing, you see the gradual decrease of pump power usage as it ventures below the 30 kW threshold.
+
+![DEVICE001 Motor Power Rules Chart](../Media/devic001-rules-chart.png)
+
+5. Repeat 1-4 and observe that DEVICE002, the non-failing pump, remains above the 30 kW threshold. DEVICE003 is also a failing pump, but displays an immediate failure versus a gradual one.
+
+![DEVICE002 Motor Power Rules Chart](../Media/device002-normal-operation.png)
+
+![DEVICE003 Immediate Failure](../Media/device003-immediate-failure.png)
+
+
 
 ## Exercise 3: Exercise name
 
