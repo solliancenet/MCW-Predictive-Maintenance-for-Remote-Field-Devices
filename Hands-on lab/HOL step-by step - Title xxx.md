@@ -355,7 +355,7 @@ DEVICE001 is the rod pump that will gradually fail. Upon running the simulator f
 
 4. Press the *Rules* tab, and select the alert for *Low Motor Power (kW)*, be sure to set the *Time Range* to the *Last Hour* for a higher level look at the telemetry values received. Notice how when the pump is operating normally, it is over the 30 kW line shown by the horizontal dotted line on the chart. Once the pump starts failing, you see the gradual decrease of pump power usage as it ventures below the 30 kW threshold.
 
-![DEVICE001 Motor Power Rules Chart](../Media/devic001-rules-chart.png)
+![DEVICE001 Motor Power Rules Chart](../Media/device001-rules-chart.png)
 
 5. Repeat 1-4 and observe that DEVICE002, the non-failing pump, remains above the 30 kW threshold. DEVICE003 is also a failing pump, but displays an immediate failure versus a gradual one.
 
