@@ -183,7 +183,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Power State](../Media/power-state-definition.png)
 
-9. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number and IP Address. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
+9. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number, IP Address, and the geographic location of the pump. From the top menu, select *Properties*, then *Device Property* from the left-hand menu. 
         
 ![Device Properties Menu](../Media/device-properties-menu.png)
 
@@ -195,8 +195,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 | ------------- | ------------ | --------- | --------------------------------- |
 | Serial Number | SerialNumber | text      | The Serial Number of the rod pump |
 | IP Address    | IPAddress    | text      | The IP address of the rod pump    |
-
-![Properties Completed](../Media/properties-complete.png) 
+| Pump Location | Location     | location  | The geo. location of the rod pump |
 
 11.  Operators and field workers will want to be able to turn on and off the pumps remotely. In order to do this we will define commands. Select the *Commands* tab, and press the *New* button to add a new command.
 
@@ -220,16 +219,13 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Telemetry Rule Form](../Media/define-new-rule.png)
 
-| Name                           | Condition # | Measurement     | Aggregation | Agg. Time Window | Operator        | Threshold |
-|--------------------------------|-------------|-----------------|-------------|------------------|-----------------|-----------|
-| Abnormal Motor Power (kW)      | 1           | Motor Power     | Average     | 5 minutes        | is less than    | 30        |
-|                                | 2           | Motor Power     | Average     | 5 mintues        | is greater than | 100       |
-| Abnormal Motor Speed (RPM)     | 1           | Motor Speed     | Average     | 5 minutes        | is less than    | 80        |
-|                                | 2           | Motor Speed     | Average     | 5 minutes        | is greater than | 300       |
-| Abnormal Casing Friction (PSI) | 1           | Casing Friction | Average     | 5 minutes        | is less than    | 800       |
-|                                | 2           | Casing Friction | Average     | 5 minutes        | is greater than | 1800      |
-| Abnormal Pump Rate (SPM)            | 1           | Pump Rate       | Average     | 5 minutes        | is less than    | 10        |
-|                                | 2           | Pump Rate       | Average     | 5 minutes        | is greater than | 80        |
+| Name                           | Measurement     | Aggregation | Agg. Time Window | Operator        | Threshold |
+|--------------------------------|-----------------|-------------|------------------|-----------------|-----------|
+| Low Motor Power (kW)           | Motor Power     | Average     | 5 minutes        | is less than    | 30        |
+| Low Motor Speed (RPM)          | Motor Speed     | Average     | 5 minutes        | is less than    | 80        |
+| Low Casing Friction (PSI)      | Casing Friction | Average     | 5 minutes        | is less than    | 830       |
+| Low Pump Rate (SPM)            | Pump Rate       | Average     | 5 minutes        | is less than    | 25        |
+| Low Time Pump On (Minutes)     | TimePumpOn      | Average     | 5 minutes        | is less than    | 65        |
 
 15. Now, we can define the dashboard by pressing the *Dashboard* option in the top menu, and selecting *Line Chart* from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
 
@@ -237,13 +233,21 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Line Chart Form](../Media/line-chart-form.png)
 
+16. A map is also available for display on the dashboard. Remaining on the Dashboard tab, select *Map*.
+
+![Dashboard Map](../Media/dashboard-map.png)
+
+17. Fill out the values for the map settings as follows:
+
+![Dashboard Map Form](../Media/dashboard-map-settings.png)
+
 ![Dashboard Charts Definition](../Media/dashboard-charts-definition.png)
 
-16. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
+18. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
 
 ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
 
-17. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
+19. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
 
 ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
 
@@ -334,6 +338,31 @@ Make note of the connection string for the device.
 5. After some time has passed, in IoT Central press the *Devices* item in the left-hand menu. Note that the provisioning status of DEVICE001, DEVICE002, and DEVICE003 now indicate *Provisioned*.
 
 ![Provisioned Devices](../Media/provisioned-devices.png)
+
+### Task 4: Interpret telemetry data
+
+DEVICE001 is the rod pump that will gradually fail. Upon running the simulator for approximately 10 minutes (or 1100 messages), you can take a look at the Motor Power chart in the Device Dashboard, or on the measurements tab and watch the power consumption decrease.
+
+1. In IoT Central, select the *Devices* menu item, then click on *Rod Pump - DEVICE001* in the Devices list.
+
+2. Ensure the *Measurements* tab is selected, then you can toggle off all telemetry values except for Motor Power so the chart will be focused solely on this telemetry property.
+
+![Focus Telemetry Chart to Motor Power](../Media/device001-focus-telemetry-chart.png)
+
+3. Observe how the Motor Power usage of DEVICE001 gradually degrades.
+
+![Motor Power usage degredation](../Media/device001-gradual-failure-power.png)
+
+4. Press the *Rules* tab, and select the alert for *Low Motor Power (kW)*, be sure to set the *Time Range* to the *Last Hour* for a higher level look at the telemetry values received. Notice how when the pump is operating normally, it is over the 30 kW line shown by the horizontal dotted line on the chart. Once the pump starts failing, you see the gradual decrease of pump power usage as it ventures below the 30 kW threshold.
+
+![DEVICE001 Motor Power Rules Chart](../Media/device001-rules-chart.png)
+
+5. Repeat 1-4 and observe that DEVICE002, the non-failing pump, remains above the 30 kW threshold. DEVICE003 is also a failing pump, but displays an immediate failure versus a gradual one.
+
+![DEVICE002 Motor Power Rules Chart](../Media/device002-normal-operation.png)
+
+![DEVICE003 Immediate Failure](../Media/device003-immediate-failure.png)
+
 
 
 ## Exercise 3: Exercise name
