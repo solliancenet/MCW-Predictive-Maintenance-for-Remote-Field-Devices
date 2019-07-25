@@ -97,16 +97,16 @@ The first task is to identify the data that the equipment will be sending to the
 The telemetry being reported by the Fabrikam rod pumps are as follows, we will be using this information later in the lab:
 
 #### Telemetry Schema
-| Field                | Type     | Description                                                                                                                                                                                                                                                                    |
-|----------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| SerialNumber         | String   | Unique serial number identifying the rod pump equipment                                                                                                                                                                                                                        |
-| IPAddress            | String   | Current IP Address                                                                                                                                                                                                                                                             |
-| TimeStamp            | DateTime | Timestamp in UTC identifying the point in time the telemetry was created                                                                                                                                                                                                       |
-| PumpRate             | Numeric  | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0                                                                                             |
-| TimePumpOn           | Numeric  | Number of minutes the pump has been on                                                                                                                                                                                                                                         |
-| MotorPowerkW         | Numeric  | Measured in Kilowatts (kW)                                                                                                                                                                                                                                                     |
-| MotorSpeed           | Numeric  | including slip (RPM)                                                                                                                                                                                                                                                           |
-| CasingFriction       | Numeric  | Measured in PSI (psi)                                                                                                                                                   |
+| Field          | Type     | Description                                                                                                                                                                        |
+| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SerialNumber   | String   | Unique serial number identifying the rod pump equipment                                                                                                                            |
+| IPAddress      | String   | Current IP Address                                                                                                                                                                 |
+| TimeStamp      | DateTime | Timestamp in UTC identifying the point in time the telemetry was created                                                                                                           |
+| PumpRate       | Numeric  | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0 |
+| TimePumpOn     | Numeric  | Number of minutes the pump has been on                                                                                                                                             |
+| MotorPowerkW   | Numeric  | Measured in Kilowatts (kW)                                                                                                                                                         |
+| MotorSpeed     | Numeric  | including slip (RPM)                                                                                                                                                               |
+| CasingFriction | Numeric  | Measured in PSI (psi)                                                                                                                                                              |
 
 ### Task 2: Create an IoT Central Application
 
@@ -166,7 +166,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 
 | Display Name    | Field Name     | Units   | Min. Value | Max. Value | Decimal Places |
-|-----------------|----------------|---------|------------|------------|----------------|
+| --------------- | -------------- | ------- | ---------- | ---------- | -------------- |
 | Pump Rate       | PumpRate       | SPM     | 0          | 100        | 1              |
 | Time Pump On    | TimePumpOn     | Minutes | 0          |            | 2              |
 | Motor Power     | MotorPowerKw   | kW      | 0          | 90         | 2              |
@@ -192,7 +192,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 ![Device Properties Form](../Media/device-properties-form.png)
 
 | Display Name  | Field Name   | Data Type | Description                       |
-|---------------|--------------|-----------|-----------------------------------|
+| ------------- | ------------ | --------- | --------------------------------- |
 | Serial Number | SerialNumber | text      | The Serial Number of the rod pump |
 | IP Address    | IPAddress    | text      | The IP address of the rod pump    |
 
