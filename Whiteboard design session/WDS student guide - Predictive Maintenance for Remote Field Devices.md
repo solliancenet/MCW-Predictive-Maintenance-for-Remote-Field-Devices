@@ -30,6 +30,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
   - [Abstract and learning objectives](#Abstract-and-learning-objectives)
   - [Step 1: Review the customer case study](#Step-1-Review-the-customer-case-study)
       - [Customer situation](#Customer-situation)
+      - [Telemetry data](#Telemetry-data)
     - [Customer needs](#Customer-needs)
     - [Customer objections](#Customer-objections)
     - [Infographic for common scenarios](#Infographic-for-common-scenarios)
@@ -79,6 +80,30 @@ Fabrikam has collected and compiled thorough maintenance and operational data of
 Their goal in the use of these monitoring capabilities and controls is to increase operator efficiency and safety. Addressing a typical maintenance issue takes several people and at least three days of system downtime at the cost of up to $20,000 USD a day, not including parts and labor. "By proactively identifying pump problems through automated monitoring, companies reduce unplanned downtime, which decreases costs, increases production, and increases the agility of maintenance services," says Fabrikam's Chief Engineer, Peter Guerin. He adds that the majority of industrial accidents don't happen at the well site; they happen when personnel is driving between sites. By eliminating the need for many site visits, they can reduce those accidents.
 
 They would like to understand their options for expediting the implementation of the PoC. Specifically, they are looking to learn what offerings Azure provides that could enable a quick end-to-end start on the infrastructure for monitoring and managing devices and the system metadata. On top of this, they are curious about what other platform services Azure provides that they should consider in this scenario.
+
+#### Telemetry data
+
+Fabrikam identified 33 rod pump components whose telemetry they want to capture and monitor. Of these, they want to automatically monitor five with thresholds set on each that will trigger alerts if signals fall below those thresholds. According to their research and historical data for the rod pump's components, values that fall below these thresholds indicate either an impending or active failure of the pump.
+
+| Field          | Type    | Normal measurement  | Failure threshold                     | Description                                                                                                                                                                                                                                                   |
+| -------------- | ------- | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MotorPowerkW   | Numeric | ~70kW               | ~30kW                                 | Measured in Kilowatts (kW); The power output of the motor should be steady, but will drop if there is a problem                                                                                                                                               |
+| MotorSpeed     | Numeric | ~200 RPM            | ~80 RPM                               | Measured in RPM (including slip); Can change based on density of oil. Lower density causes this to go up (like if you have pockets of gas and it jumps up). If there's a failure it will go down below the normal operating average.                          |
+| CasingFriction | Numeric | ~1450 psi           | ~830 psi                              | Measured in PSI (psi); The pressure will drop if a fissure is developing in the casing, indicating a failure.                                                                                                                                                 |
+| PumpRate       | Numeric | ~60 SPM             | ~25 SPM                               | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0. A significant slow down could be an indicator of failure within the pump. |
+| TimePumpOn     | Numeric | Amplitude: 0 - ~800 | Amplitude: 0 - ~340; higher frequency | Number of minutes the pump has been on. This should be a steady sawtooth pattern with a regular cadence of the pump cycling power. A consistently shorter than average cadence can indicate problems with the pump.                                           |
+
+Normal signal readings from these five sensors appear in the chart below, with 10,000 intervals. The frequency of the output is condensed to fit:
+
+![The five components' telemetry shown in their normal operating state.](media/normal-telemetry.png "Normal telemetry")
+
+The next chart shows the telemetry for these five components during a gradual failure. In many cases, there is time to react and prevent total failure through remote commands to the pump controller:
+
+![The five components' telemetry shown during gradual failure.](media/gradual-failure-telemetry.png "Gradual failure")
+
+This final chart shows the telemetry for these five components when there is an immediate failure:
+
+![The five components' telemetry during immediate failure.](media/immediate-failure-telemetry.png "Immediate failure")
 
 ### Customer needs
 

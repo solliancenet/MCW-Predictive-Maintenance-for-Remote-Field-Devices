@@ -34,6 +34,7 @@ Microsoft and the trademarks listed at https://www.microsoft.com/en-us/legal/int
   - [Abstract and learning objectives](#Abstract-and-learning-objectives)
   - [Step 1: Review the customer case study](#Step-1-Review-the-customer-case-study)
     - [Customer situation](#Customer-situation)
+      - [Telemetry data](#Telemetry-data)
     - [Customer needs](#Customer-needs)
     - [Customer objections](#Customer-objections)
     - [Infographic for common scenarios](#Infographic-for-common-scenarios)
@@ -203,6 +204,30 @@ Fabrikam has collected and compiled thorough maintenance and operational data of
 Their goal in the use of these monitoring capabilities and controls is to increase operator efficiency and safety. Addressing a typical maintenance issue takes several people and at least three days of system downtime at the cost of up to $20,000 USD a day, not including parts and labor. "By proactively identifying pump problems through automated monitoring, companies reduce unplanned downtime, which decreases costs, increases production, and increases the agility of maintenance services," says Fabrikam's Chief Engineer, Peter Guerin. He adds that the majority of industrial accidents don't happen at the well site; they happen when personnel is driving between sites. By eliminating the need for many site visits, they can reduce those accidents.
 
 They would like to understand their options for expediting the implementation of the PoC. Specifically, they are looking to learn what offerings Azure provides that could enable a quick end-to-end start on the infrastructure for monitoring and managing devices and the system metadata. On top of this, they are curious about what other platform services Azure provides that they should consider in this scenario.
+
+#### Telemetry data
+
+Fabrikam identified 33 rod pump components whose telemetry they want to capture and monitor. Of these, they want to automatically monitor five with thresholds set on each that will trigger alerts if signals fall below those thresholds. According to their research and historical data for the rod pump's components, values that fall below these thresholds indicate either an impending or active failure of the pump.
+
+| Field          | Type    | Normal measurement  | Failure threshold                     | Description                                                                                                                                                                                                                                                   |
+| -------------- | ------- | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MotorPowerkW   | Numeric | ~70kW               | ~30kW                                 | Measured in Kilowatts (kW); The power output of the motor should be steady, but will drop if there is a problem                                                                                                                                               |
+| MotorSpeed     | Numeric | ~200 RPM            | ~80 RPM                               | Measured in RPM (including slip); Can change based on density of oil. Lower density causes this to go up (like if you have pockets of gas and it jumps up). If there's a failure it will go down below the normal operating average.                          |
+| CasingFriction | Numeric | ~1450 psi           | ~830 psi                              | Measured in PSI (psi); The pressure will drop if a fissure is developing in the casing, indicating a failure.                                                                                                                                                 |
+| PumpRate       | Numeric | ~60 SPM             | ~25 SPM                               | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0. A significant slow down could be an indicator of failure within the pump. |
+| TimePumpOn     | Numeric | Amplitude: 0 - ~800 | Amplitude: 0 - ~340; higher frequency | Number of minutes the pump has been on. This should be a steady sawtooth pattern with a regular cadence of the pump cycling power. A consistently shorter than average cadence can indicate problems with the pump.                                           |
+
+Normal signal readings from these five sensors appear in the chart below, with 10,000 intervals. The frequency of the output is condensed to fit:
+
+![The five components' telemetry shown in their normal operating state.](media/normal-telemetry.png "Normal telemetry")
+
+The next chart shows the telemetry for these five components during a gradual failure. In many cases, there is time to react and prevent total failure through remote commands to the pump controller:
+
+![The five components' telemetry shown during gradual failure.](media/gradual-failure-telemetry.png "Gradual failure")
+
+This final chart shows the telemetry for these five components when there is an immediate failure:
+
+![The five components' telemetry during immediate failure.](media/immediate-failure-telemetry.png "Immediate failure")
 
 ### Customer needs
 
@@ -395,25 +420,57 @@ The primary audience is the business decision makers and technology decision mak
 
 _High-level architecture_
 
-  ...
+1. Without getting into the details (the following sections will address the particular details), diagram your initial vision for using a SaaS-based IoT solution on Azure with device management, custom dashboards, user management, real-time telemetry capture, analysis, and export. If you can, include the underlying architecture of the SaaS solution by identifying its major components.
 
-> **Note**: The preferred solution is only one of many possible, viable approaches.
+  DIAGRAM HERE
 
-_IoT Central_
+  > **Note**: The preferred solution is only one of many possible, viable approaches.
 
-...
+_IoT options in Azure_
 
-_Metadata Management_
+1. What are the SaaS-based IoT options in Azure?
 
-...
+2. What are the PaaS-based IoT options in Azure?
 
-_Dashboards_
+3. Would you recommend SaaS or PaaS for this customer situation? What are the pros and cons of each?
 
-...
+_Device and metadata management_
+
+1. How do you connect devices one at a time?
+
+2. How do you connect multiple devices at scale?
+
+3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to automatically connect to the cloud when turned on, or do they all have to be registered during installation?
+
+4. What communication protocols are supported? What if they are using devices that do not support those protocols?
+
+5. Is there a way to define common metadata for devices, such as location and serial number? How is this metadata applied to devices, and how can developers set this metadata programmatically?
+
+6. How can control messages be sent to rod pump controllers from the cloud to perform tasks like turn off the pump engine or change settings?
+
+_Dashboards and telemetry analysis_
+
+1. How would you propose Fabrikam create visualizations for each rod pump?
+
+2. How can they create shared dashboards, and can users create their own personalized dashboards?
+
+3. What options are available to view and filter device telemetry?
+
+4. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
 
 _Security_
 
-...
+1. Is device data encrypted both in transit and at rest?
+
+2. Can Fabrikam use standard certificates for device authentication? How do Fabrikam's administrators approve new devices that attempt to connect to the cloud?
+
+3. What user management options are available for the dashboards? What roles are defined?
+
+_Alerts and integrations_
+
+1. Fabrikam wants to use their knowledge of rod pump component operating parameters and proactively monitor telemetry for immediate or impending failure. How can they set thresholds for sensor data and trigger alerts when those thresholds are crossed?
+
+2. What options can they use to send alerts? They are interested in available integrations that may work with services they already use, like Office 365 or Dynamics CRM.
 
 ## Checklist of preferred objection handling
 
