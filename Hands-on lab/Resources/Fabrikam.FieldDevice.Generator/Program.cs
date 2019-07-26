@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabrikam.FieldDevice.Generator.OutputHelpers;
 using Microsoft.Extensions.Configuration;
 
 namespace Fabrikam.FieldDevice.Generator
@@ -18,6 +15,8 @@ namespace Fabrikam.FieldDevice.Generator
         private static readonly object LockObject = new object();
         // AutoResetEvent to signal when to exit the application.
         private static readonly AutoResetEvent WaitHandle = new AutoResetEvent(false);
+        private static CancellationTokenSource _cancellationSource = new CancellationTokenSource();
+        private static Dictionary<string, Task> _runningDeviceTasks;
 
         static void Main(string[] args)
         {
@@ -29,8 +28,8 @@ namespace Fabrikam.FieldDevice.Generator
 
             _configuration = builder.Build();
 
-            var cancellationSource = new CancellationTokenSource();
-            var cancellationToken = cancellationSource.Token;
+            
+            var cancellationToken = _cancellationSource.Token;
 
             WriteLineInColor("Pump Telemetry Generator", ConsoleColor.White);
             Console.WriteLine("=============");
@@ -45,7 +44,7 @@ namespace Fabrikam.FieldDevice.Generator
             Console.CancelKeyPress += (o, e) =>
             {
                 WriteLineInColor("Stopped generator. No more events are being sent.", ConsoleColor.Yellow);
-                cancellationSource.Cancel();
+                CancelAll();
 
                 // Allow the main thread to continue and exit...
                 WaitHandle.Set();
@@ -74,10 +73,15 @@ namespace Fabrikam.FieldDevice.Generator
                     try
                     {
                         // Start sending telemetry to simulated devices:
-                        var deviceRunTasks = SetupDeviceRunTasks(cancellationToken);
-                        Task.WhenAll(deviceRunTasks).Wait(cancellationToken);
+                        _runningDeviceTasks = SetupDeviceRunTasks();
+                        var tasks = _runningDeviceTasks.Select(t => t.Value).ToList();
+                        while (tasks.Count > 0)
+                        {
+                            Task.WhenAll(tasks).Wait(cancellationToken);
+                            tasks = _runningDeviceTasks.Where(t=> !t.Value.IsCompleted).Select(t => t.Value).ToList();
+                        }
                     }
-                    catch (OperationCanceledException canceled)
+                    catch (OperationCanceledException)
                     {
                         Console.WriteLine("The device telemetry operation was canceled.");
                         // No need to throw, as this was expected.
@@ -88,7 +92,7 @@ namespace Fabrikam.FieldDevice.Generator
                     break;
             }
 
-            cancellationSource.Cancel();
+            CancelAll();
             Console.WriteLine();
             WriteLineInColor("Done sending generated pump data", ConsoleColor.Cyan);
             Console.WriteLine();
@@ -98,6 +102,7 @@ namespace Fabrikam.FieldDevice.Generator
             Console.ReadLine();
             WaitHandle.WaitOne();
         }
+
 
         /// <summary>
         /// Generates anomaly model training data to new CSV files.
@@ -124,11 +129,10 @@ namespace Fabrikam.FieldDevice.Generator
         /// <summary>
         /// Creates the set of tasks that will send data to the IoT hub.
         /// </summary>
-        /// <param name="fileManager">TrainingFileManager for the data set for devices to send.</param>
         /// <returns></returns>
-        private static IEnumerable<Task> SetupDeviceRunTasks(CancellationToken cancellationToken)
+        private static Dictionary<string,Task> SetupDeviceRunTasks()
         {
-            var deviceTasks = new List<Task>();
+            var deviceTasks = new Dictionary<string, Task>();
             var config = ParseConfiguration();
             const int sampleSize = 10000;
             const int failOverXIterations = 625;
@@ -147,11 +151,37 @@ namespace Fabrikam.FieldDevice.Generator
 
             foreach (var device in devices)
             {
-                device.SendDeviceProperties();
-                deviceTasks.Add(device.RunDeviceAsync(cancellationToken));
+                device.SendDevicePropertiesAndInitialState();
+                deviceTasks.Add(device.DeviceId, device.RunDeviceAsync());
+                device.PumpPowerStateChanged += Device_PumpPowerStateChanged;
             }
 
             return deviceTasks;
+        }
+
+        private static void Device_PumpPowerStateChanged(object sender, PumpPowerStateChangedArgs e)
+        {
+            //reset pump if state has changed to being powered on
+            if (e.PumpPowerState == PumpPowerState.ON)
+            {
+                //get current device running task
+                var device = devices.FirstOrDefault(d => d.DeviceId == e.DeviceId);
+
+                if (device != null)
+                {
+                    _runningDeviceTasks.Remove(e.DeviceId);
+                    _runningDeviceTasks.Add(device.DeviceId, device.RunDeviceAsync());
+                }
+            }
+        }
+
+        private static void CancelAll()
+        {
+            foreach(var device in devices)
+            {
+                device.CancelCurrentRun();
+            }
+            _cancellationSource.Cancel();
         }
 
         /// <summary>
