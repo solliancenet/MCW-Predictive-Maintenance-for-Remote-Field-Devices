@@ -15,7 +15,6 @@ They would like to start by building a proof of concept that performs the predic
 -   Data Scientist
 -   Data Engineer
 
-
 ## Abstract
 
 ### Workshop

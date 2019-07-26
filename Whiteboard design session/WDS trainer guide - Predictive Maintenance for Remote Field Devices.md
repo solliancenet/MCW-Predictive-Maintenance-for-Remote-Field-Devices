@@ -425,9 +425,11 @@ _High-level architecture_
 
 1. Without getting into the details (the following sections will address the particular details), diagram your initial vision for using a SaaS-based IoT solution on Azure with device management, custom dashboards, user management, real-time telemetry capture, analysis, and export. If you can, include the underlying architecture of the SaaS solution by identifying its major components.
 
-  DIAGRAM HERE
+    ![The architecture diagram illustrates the components of Azure IoT Central.](../Media/arch-diagram.png "High-level architecture")
 
-  > **Note**: The preferred solution is only one of many possible, viable approaches.
+    Azure IoT Central is at the core of the preferred solution. Because it is a SaaS-based solution, the Azure services it uses are hidden from view. This diagram shows its primary components that pertain to Fabrikam's use case. IoT field devices securely connect to IoT Central through its cloud gateway. The gateway uses Azure IoT Hub Device Provisioning Service (DPS) to streamline device management, and the underlying IoT Hub service facilitates bi-directional communication between the cloud and IoT devices. All device telemetry is stored in a time series data store, based on Azure Time Series Insights. The application data store persists the IoT Central application and its customizations. This application provides a user interface shell, through which Fabrikam's users manage devices and associated metadata, view dashboards and reports, and configure rules and actions to react to device telemetry that indicates possible rod pump failure. Pervasive throughout the end-to-end solution is security in transit and at rest for devices and the web-based management application. The continuous data export feature is used to enable hot and cold path workloads on real-time and batch device telemetry and metadata, using external services. Batch data is exported to Azure Blob storage in Apache Avro file format each minute, and real-time data is exported to either Azure Event Hubs or Azure Service Bus.
+
+    > **Note**: The preferred solution is only one of many possible, viable approaches.
 
 _IoT options in Azure_
 
