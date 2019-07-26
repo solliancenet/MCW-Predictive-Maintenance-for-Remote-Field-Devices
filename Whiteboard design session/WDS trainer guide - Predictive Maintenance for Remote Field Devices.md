@@ -201,7 +201,7 @@ Whichever cloud-based solution Fabrikam pursues, they want to know how they can 
 
 Fabrikam has collected and compiled thorough maintenance and operational data of rod pump components and used this information to identify failure thresholds that identify an immediate or impending mechanical failure. Each of the elements of the rod pump's mechanism generates a consistent pattern in their telemetry when operating under normal conditions. If one of these components starts to degrade or suffers an operational failure, the signal reflects this change in status. When this change in status occurs, Fabrikam would like to automatically send an alert to engineers and field pump supervisors so they can potentially mitigate the issue and prevent damage to the failing and related components. In many cases, the fuel rod's onboard controller can modify the operating parameters of the pump to avoid or mitigate the impact of unexpected changes. Alternatively, if necessary, it can shut down the pump before any damage occurs and notify the company that repairs are necessary—protecting the machinery, and preventing potential environmental damage. Fabrikam would like to have a mechanism within their solution to send commands to rod pump controllers to modify these operating parameters remotely.
 
-Their goal in the use of these monitoring capabilities and controls is to increase operator efficiency and safety. Addressing a typical maintenance issue takes several people and at least three days of system downtime at the cost of up to $20,000 USD a day, not including parts and labor. "By proactively identifying pump problems through automated monitoring, companies reduce unplanned downtime, which decreases costs, increases production, and increases the agility of maintenance services," says Fabrikam's Chief Engineer, Peter Guerin. He adds that the majority of industrial accidents don't happen at the well site; they happen when personnel is driving between sites. By eliminating the need for many site visits, they can reduce those accidents.
+Their goal in the use of these monitoring capabilities and controls is to increase operator efficiency and safety. Addressing a typical maintenance issue takes several people and at least three days of system downtime at the cost of up to $20,000 USD a day, not including parts and labor. "By proactively identifying pump problems through automated monitoring, companies reduce unplanned downtime, which decreases costs, increases production, and increases the agility of maintenance services," says Fabrikam's Chief Technology Officer, Peter Guerin. He adds that the majority of industrial accidents don't happen at the well site; they happen when personnel is driving between sites. By eliminating the need for many site visits, they can reduce those accidents.
 
 They would like to understand their options for expediting the implementation of the PoC. Specifically, they are looking to learn what offerings Azure provides that could enable a quick end-to-end start on the infrastructure for monitoring and managing devices and the system metadata. On top of this, they are curious about what other platform services Azure provides that they should consider in this scenario.
 
@@ -366,7 +366,11 @@ Directions: Tables reconvene with the larger group to hear the facilitator/SME s
 
 ## Additional references
 
-...
+| Description                         | Links                                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| About IoT Central                   | <https://docs.microsoft.com/en-us/azure/iot-central/overview-iot-central>                                 |
+| About IoT Hub                       | <https://docs.microsoft.com/azure/iot-hub/iot-hub-what-is-iot-hub>                                        |
+| What are IoT solution accelerators? | <https://docs.microsoft.com/en-us/azure/iot-accelerators/iot-accelerators-what-are-solution-accelerators> |
 
 # Predictive Maintenance for Remote Field Devices whiteboard design session trainer guide
 
@@ -412,9 +416,9 @@ Directions: Tables reconvene with the larger group to hear the facilitator/SME s
 
 ## Preferred target audience
 
-Rodrigo Romani, Chief Technical Officer (CTO), Relecloud
+Peter Guerin, Chief Technical Officer (CTO), Fabrikam, Inc.
 
-The primary audience is the business decision makers and technology decision makers. From the case study scenario, this includes Justin Tadros, CTO of Fabricam. Usually we talk to the infrastructure managers who report to the chief information officers (CIOs), or to application sponsors (like a vice president \[VP\] line of business \[LOB\], or chief marketing officer \[CMO\]), or to those who represent the business unit IT or developers that report to application sponsors.
+The primary audience is the business decision makers and technology decision makers. From the case study scenario, this includes Peter Guerin, CTO of Fabrikam, Inc. Usually we talk to the infrastructure managers who report to the chief information officers (CIOs), or to application sponsors (like a vice president \[VP\] line of business \[LOB\], or chief marketing officer \[CMO\]), or to those who represent the business unit IT or developers that report to application sponsors.
 
 ## Preferred solution
 
@@ -430,9 +434,21 @@ _IoT options in Azure_
 
 1. What are the SaaS-based IoT options in Azure?
 
+    Azure IoT Central is an end-to-end SaaS solution that provides the most common features used in a broad range of IoT solutions without requiring cloud-based development expertise. Most of the configuration can be done through the provided web-based UI, and device management follows a model-based approach where device templates are created to define IoT device metadata for simplified management. Devices are added to a device set that is based on a version of the template, organizing like-devices for reporting and management. Although IoT Central uses several Azure services under the covers, such as IoT Hub, those details are hidden from the user, allowing them to focus on customizing their personalized IoT Central application through its innovative UI.
+
 2. What are the PaaS-based IoT options in Azure?
 
+    Azure IoT Hub is a PaaS service that allows users to connect and manage millions of IoT devices, ingest millions of events per second from these devices, automate IoT device provisioning, and cloud-to-device messaging for command and control. IoT Hub also helps enforce security on devices through per-device identity, allowing operators and admins to authorize and revoke device connections. Azure IoT solution accelerators are packaged solutions built on top of IoT Hub and other Azure components to kick-start PaaS-based IoT projects. When using Azure IoT solution accelerators, you have access to the underlying Azure services of the solution as well as the source code that comes with the starter solution. The flexibility level is high, but so is the skill level to customize the accelerator to your needs.
+
+    Both IoT Central and Azure IoT solution accelerators use IoT Hub along with other Azure services. However, these are not needed to use IoT Hub by itself in your own custom solution.
+
 3. Would you recommend SaaS or PaaS for this customer situation? What are the pros and cons of each?
+
+    Fabrikam stated their interest in a SaaS-based solution that provides a fully managed, end-to-end IoT solution without required cloud-based IoT architecture and development expertise. Azure IoT Central's features meet the base requirements for their PoC, and can easily scale to manage and ingest telemetry from millions of devices. In addition, IoT Central provides a very simple and predictable, device-based pricing structure. This allows them to project costs and provide a transparent breakdown of fees to their customers.
+
+    There are some drawbacks to using IoT Central, as with any SaaS-based solution. The primary drawback is limited flexibility because the underlying infrastructure is not customizable because its components are not exposed. Fabrikam will need to find workarounds if ever their requirements change and they need customization beyond what is provided by IoT Central's interface and SDK. Another limiting factor is how data is accessed. Although all the data is stored within a time series data store, you only have access to it either through IoT Central's UI, which offers flexible filtering and visualizations, or by enabling continuous export of data to Azure Storage, Azure Event Hubs, or Azure Service Bus. You cannot directly query the data store from an external application.
+
+    Fabrikam could opt to create an IoT solution from scratch with IoT Hub and their own web applications and related services, or start with an Azure IoT solution accelerator for maximum flexibility. If they go this route, they have full control over the development and deployment lifecycle of their solution, including automated deployments to development, staging, and production environments. The primary drawbacks to this approach are increased time to develop and deploy the solution, required expertise for end-to-end IoT development and customization, and a more opaque pricing structure where they must fine-tune the services to control costs.
 
 _Device and metadata management_
 
@@ -474,17 +490,13 @@ _Alerts and integrations_
 
 ## Checklist of preferred objection handling
 
-1.  1. Is there an out of the box solution they can use to jumpstart the creation of the solution?
-2. Can this solution enable their data scientists to leverage their expertise to build custom models against timeseries telemetry, and to plug their models into the near-real time streams collected by the solution?
-3. How would data engineers get at rod pump streaming telemetry?
-4. How can data engineers collect historical streaming telemetry for use in modeling by the data scientists?
-5. What service would the data scientists use for training their model that could support the potentially large scale?
-6. How could data scientists plug their model into a real-time predictive analytics pipeline to detect potential failures?
-7. How would alerts be generated and delivered when the model predicts a failure?
-8. How can the operators view the current status of the rod pumps in a single dashboard?
+1. Is there an out of the box solution we can use to jump-start the creation of the solution?
+2. We are worried about being constrained by a "black box" if we go with a SaaS solution. Do we have access to all of our collected telemetry we can use for external workloads?
+3. How would alerts be generated and delivered when the automated monitoring predicts a failure? What integration options do we have?
+4. How can the operators view the current status of the rod pumps in a single dashboard?
 
 ## Customer quote (to be read back to the attendees at the end)
 
 "Quote goes here ..."
 
---- Justin Tadros, CTO, Fabricam
+--- Peter Guerin, CTO, Fabrikam, Inc.
