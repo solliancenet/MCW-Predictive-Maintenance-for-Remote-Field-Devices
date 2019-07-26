@@ -77,7 +77,15 @@ namespace Fabrikam.FieldDevice.Generator
                         var tasks = _runningDeviceTasks.Select(t => t.Value).ToList();
                         while (tasks.Count > 0)
                         {
-                            Task.WhenAll(tasks).Wait(cancellationToken);
+                            try
+                            {
+                                Task.WhenAll(tasks).Wait(cancellationToken);
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                //expected
+                            }
+                            
                             tasks = _runningDeviceTasks.Where(t=> !t.Value.IsCompleted).Select(t => t.Value).ToList();
                         }
                     }
