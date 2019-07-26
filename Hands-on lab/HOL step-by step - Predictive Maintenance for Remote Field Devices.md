@@ -27,24 +27,29 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- TOC -->
 
-- Predictive Maintenance for Remote Field Devices hands-on lab step-by-step](#predictive-maintenance-for-remote-field-devices-hands-on-lab-step-by-step)
-    - [Abstract and learning objectives](#abstract-and-learning-objectives)
-    - [Overview](#overview)
-    - [Solution architecture](#solution-architecture)
-    - [Requirements](#requirements)
-    - [Before the hands-on lab](#before-the-hands-on-lab)
-    - [Exercise 1: Configuring IoT Central with devices and metadata](#exercise-1-configuring-iot-central-with-devices-and-metadata)
-        - [Task 1: Task name](#task-1-task-name)
-        - [Task 2: Task name](#task-2-task-name)
-    - [Exercise 2: Exercise name](#exercise-2-exercise-name)
-        - [Task 1: Task name](#task-1-task-name-1)
-        - [Task 2: Task name](#task-2-task-name-1)
-    - [Exercise 3: Exercise name](#exercise-3-exercise-name)
-        - [Task 1: Task name](#task-1-task-name-2)
-        - [Task 2: Task name](#task-2-task-name-2)
-    - [After the hands-on lab](#after-the-hands-on-lab)
-        - [Task 1: Task name](#task-1-task-name-3)
-        - [Task 2: Task name](#task-2-task-name-3)
+- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#predictive-maintenance-for-remote-field-devicesmhands-on-lab-step-by-step)
+  - [Abstract and learning objectives](#abstract-and-learning-objectives)
+  - [Overview](#overview)
+  - [Solution architecture](#solution-architecture)
+  - [Requirements](#requirements)
+  - [Before the hands-on lab](#before-the-hands-on-lab)
+  - [Exercise 1: Configuring IoT Central with devices and metadata](#exercise-1-configuring-iot-central-with-devices-and-metadata)
+    - [Task 1: Model the telemetry data](#task-1-model-the-telemetry-data)
+      - [Telemetry Schema](#telemetry-schema)
+    - [Task 2: Create an IoT Central Application](#task-2-create-an-iot-central-application)
+    - [Task 3: Create the Device Template](#task-3-create-the-device-template)
+    - [Task 4: Create and provision real devices](#task-4-create-and-provision-real-devices)
+  - [Exercise 2: Running the Rod Pump Simulator](#exercise-2-running-the-rod-pump-simulator)
+    - [Task 1: Generate device connection strings](#task-1-generate-device-connection-strings)
+    - [Task 2: Open the Visual Studio solution, and update connection string values](#task-2-open-the-visual-studio-solution-and-update-connection-string-values)
+    - [Task 3: Run the application](#task-3-run-the-application)
+    - [Task 4: Interpret telemetry data](#task-4-interpret-telemetry-data)
+    - [Task 5: Restart a failing pump remotely](#task-5-restart-a-failing-pump-remotely)
+  - [Exercise 3: Creating a notification action on a telemetry rule](#exercise-3-creating-a-notification-action-on-a-telemetry-rule)
+    - [Task 1: Create a workflow using Microsoft Flow](#task-1-create-a-workflow-using-microsoft-flow)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+    - [Task 1: Task name](#task-1-task-name)
+    - [Task 2: Task name](#task-2-task-name)
 
 <!-- /TOC -->
 
@@ -363,29 +368,73 @@ DEVICE001 is the rod pump that will gradually fail. Upon running the simulator f
 
 ![DEVICE003 Immediate Failure](../Media/device003-immediate-failure.png)
 
+### Task 5: Restart a failing pump remotely
 
+After observing the failure of two of the rod pumps, you are able cycle the power state of the pump remotely. The simulator is setup to receive the Toggle Motor Power command from IoT Central, and will update the state accordingly and start/stop sending telemetry to the cloud.
 
-## Exercise 3: Exercise name
+1. In IoT Central, select *Devices* from the left-hand menu, then press *Rod Pump - DEVICE001* from the device list. Observe that even though the pump has in all purposes failed, that there is still power to the motor - indicated by the Power State bar at the bottom of the device's Measurements chart.
 
+![DEVICE001 Power State in Failure](../Media/device001-powerstate-in-failure.png)
+
+2. In order to recover DEVICE001, select the *Commands* tab. You will see the *Toggle Motor Power* command. Press the *Run* button on the command to turn the pump motor off. 
+   
+![DEVICE001 Run Toggle Motor Power Command](../Media/device001-run-toggle-command.png)
+
+3. The simulator will also indicate that the command has been received from the cloud. Note in the output of the simulator, that DEVICE001 is no longer sending telemetry due to the pump motor being off.
+
+![Simulator showing DEVICE001 received the cloud message](../Media/device001-simulator-power-off.png)
+
+4. After a few moments, return to the *Measurements* tab of *DEVICE001* in IoT Central. Note the receipt of telemetry has stopped, and the state indicates the motor power state is off.
+
+![DEVICE001 Power State Off with no telemetry coming in](../Media/device001-stopped-telemetry-power-state-off.png)
+
+5. Return to the *Commands* tab, and toggle the motor power back on again by pressing the *Run* button once more. On the measurements tab, you will see the Power State switch back to online, and telemetry to start flowing again. Due to the restart of the rod pump - it has now recovered and telemetry is back into normal ranges!
+
+![DEVICE001 recovered after Pump Power State has been cycled](../Media/device001-recovered-1.png)
+
+![Another instance of pump recovery](../Media/device001-recovery-2.png)
+   
+
+## Exercise 3: Creating a notification action on a telemetry rule
 Duration: X minutes
 
-\[insert your custom Hands-on lab content here . . .\]
+Earlier in the lab, we created Rules in the Rod Pump device template so that we could easily visualize failures when telemetry measurements are received beneath a specific threshold. Fabrikam does not want to manually monitor these rules charts on every device in order to identify failures or impending failures. Instead, they wish to have their field workforce notified that there may be a problem with a specific rod pump. These notifications should take the form of an email. We will implement this notification workflow by adding an *Action* to a rule.
 
-### Task 1: Task name
+![DEVICE001 rules threshold](../Media/device001-rule-threshold.png)
 
-1.  Number and insert your custom workshop content here . . .
+### Task 1: Create a workflow using Microsoft Flow
 
-    a.  Insert content here
+[Microsoft Flow](https://flow.microsoft.com) is a handy tool that can be used in a vast array of scenarios. We will be taking advantage of the built-in capabilities of Flow to create and send an email when the Motor Power (kW) reads below 30 kW.
 
-        i.  
+1. Access the [Microsoft Flow website](https://flow.microsoft.com) and sign in (create an account if you don't already have one).
 
-### Task 2: Task name
+2. From the left-hand menu - select the *My Flows* item - then press the *New* button and select *Create from template* to begin defining our workflow.
+   
+![Create new Flow](../Media/flow-create-from-template.png)
 
-1.  Number and insert your custom workshop content here . . .
+3. A search form will be displayed, enter the search term *IoT Central* and press the *Enter* key. When the search results have been displayed - select the *Send an email to your team when an IoT Central rule is triggered* template.
 
-    a.  Insert content here
+![IoT Central Flow Templates](../Media/flow-iot-central-templates.png)
 
-        i.  
+4. Next, you will need to provide Flow with the necessary permissions to integrate with the email platform, as well as with IoT Central. If you receive any error messages while trying to authenticate to IoT Central, please view the *Troubleshooting* section at the bottom of [this web page](https://docs.microsoft.com/en-us/azure/iot-central/howto-add-microsoft-flow).
+   
+![Grant Flow Permission](../Media/flow-permissions.png)
+
+5. Define your workflow by selecting the appropriate IoT Central application, and the rule that you would like to trigger for the notification. In this case, select the *Low Motor Power (kW)* rule. Then enter one or more email addresses to send the notification to (semi-colon delimited). Finally, author the email subject and body using the dynamic content helper popup. When complete, press the *Save* button.
+   
+![Flow definition](../Media/flow-workflow-definition.png)
+
+6. Once saved, you can see the workflow you've just defined by selecting the *My Flows* menu item.
+
+![Flow workflow created](../Media/flow-workflow-created.png)
+
+7. Return to IoT Central, select *Device Templates* from the left-hand menu and select the *Rod Pump* template. Press the *Rules* Tab and from the Rules list, select *Low Motor Power (kW)*, observe that an action has now been added to the rule.
+
+![New rule action](../Media/new-rule-action.png)
+
+8. Once the 5 minute average device telemetry falls below the 30 kW threshold, an email notification is sent.
+
+![Flow Email Notification](../Media/flow-email-notification.png)
 
 ## After the hands-on lab 
 
