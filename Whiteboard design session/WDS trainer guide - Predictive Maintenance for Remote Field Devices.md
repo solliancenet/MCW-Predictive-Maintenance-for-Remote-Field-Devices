@@ -298,13 +298,11 @@ _Device and metadata management_
 
 _Dashboards and telemetry analysis_
 
-1. How would you propose Fabrikam create visualizations for each rod pump?
+1. How would you propose Fabrikam create visualizations for each rod pump? What options are available to view and filter the device telemetry?
 
 2. How can they create shared dashboards, and can users create their own personalized dashboards?
 
-3. What options are available to view and filter device telemetry?
-
-4. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
+3. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
 
 _Security_
 
@@ -550,23 +548,53 @@ _Device and metadata management_
 
 _Dashboards and telemetry analysis_
 
-1. How would you propose Fabrikam create visualizations for each rod pump?
+1. How would you propose Fabrikam create visualizations for each rod pump? What options are available to view and filter the device telemetry?
+
+    By using the recommended IoT Central SaaS product, Fabrikam benefits from automated visualizations of the rod pump telemetry data. They can view the sensor data by selecting a device in the Device Explorer. For more advanced visualizations, including the ability to view telemetry for multiple pumps in a single pane, use the Analytics page.
+
+    Each of the device's telemetry items can be displayed or hidden when viewing a device. Since the data is time series-based, there are time filters to show events within predefined time windows or a custom range. Charts are displayed based on the data type, and chart options can be set to adjust the visualizations. Telemetry can also be viewed on a map if there is location-based data. Any location movements are displayed on the map for the filtered time range. Finally, all data can be displayed in a grid.
 
 2. How can they create shared dashboards, and can users create their own personalized dashboards?
+   
+    IoT Central includes a shared dashboard on the application's home page. This dashboard is visible to all users and is initially blank when the Custom Application template is used. The dashboard is composed of tiles that can be sized and positioned, and include links, images, labels, device settings and properties, maps, charts, state history, event history, KPIs, and last known value.
 
-3. What options are available to view and filter device telemetry?
+    Users can create a personalized dashboard by selecting New on the shared dashboard and supplying a name. Only they can see the new dashboard.
 
-4. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
+    Device-level dashboards are configured by editing the device template. This provides an alternative shared dashboard geared toward the device type.
+
+3. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
+
+    When using IoT Central, all device and telemetry data is stored within underlying Azure services, such as Azure Time Series Analytics, that are hidden from view. You cannot directly access this data beyond the IoT Central application portal interface. However, IoT Central provides a feature called **continuous data export** to automatically export your data to your own Azure Blob storage, Azure Event Hubs, and Azure Service Bus instances. The data that is available to export includes measurements, devices, and device templates.
+    
+    It is important to note that the only data that gets exported using this feature is any data added after enabling continuous data export. You cannot retrieve data that existed before turning on the feature. Because of this limitation, you should turn on the feature early.
+
+    Using continuous data export enables many integration options, depending on the data target. When you choose Azure Blob storage as the export destination, data is exported to your storage account once per minute, and the files are stored in your selected container in Apache Avro format. The exported files use the same format as the message files exported by [IoT Hub message routing](https://docs.microsoft.com/azure/iot-hub/iot-hub-csharp-csharp-process-d2c) to Blob storage. The exported data can be used for cold path processing and analytics like training machine learning models in Azure Machine Learning or Azure Databricks. It can also be used for long-term trend analysis in Microsoft Power BI. The path to landing the telemetry in Power BI involves a handful of Azure services, such as Azure Functions, Azure Data Factory, and Azure SQL Database, but this is just a [simple example](https://docs.microsoft.com/en-us/azure/iot-central/howto-connect-powerbi) of one option for adding on a custom workflow to your data.
+
+    If you want to have near-real-time access to the data, allowing you to create a hot path for analytics and processing, choose either Azure Event Hubs or Azure Service Bus as the continuous data export target. Many services within Azure can process streaming data from Azure Event Hubs and Azure Service Bus. For example, you can ingest the data into Azure Stream Analytics to perform transformations and aggregates over time windows, and output to a data sink like Power BI or Azure SQL Database. You can perform serverless processing using Azure Functions and output to Event Grid to trigger several downstream consumers like Azure Logic Apps or custom WebHooks.
 
 _Security_
 
 1. Is device data encrypted both in transit and at rest?
 
+    Yes, all data exchanged between IoT devices and IoT Central is encrypted. All data stored in IoT Central is also encrypted.
+
 2. Can Fabrikam use standard certificates for device authentication? How do Fabrikam's administrators approve new devices that attempt to connect to the cloud?
 
-    Yes, Fabrikam can use industry-standard X.509 CA certificates for device authentication. However, simply using the X.509 CA certificate alone does not ensure absolute security of the devices. As with any digital certificate, its public information is susceptible to eavesdropping. An eavesdropper can intercept the certificate and try to use it as its own, attempting to register their unauthorized device with IoT Central. The IoT Hub portion of the IoT Central architecture combats eavesdropping through a [proof-of-possession (PoP) flow](https://tools.ietf.org/html/rfc5280#section-3.1), by generating a random number to be signed by Fabrikam, using its private key. This proof-of-possession challenge is part of the X.509 CA registration process when a new device is added. Because of this, Fabrikam must make sure the private keys are protected from outsiders who can use them to pass the proof-of-possession challenge. The best way to protect the keys is to use Hardware Secure Modules (HSM)-based silicon chips in their IoT devices, which are capable of internally generating and protecting private keys. When HSM is used in this fashion, the private keys never see the light of day, securing them from potentially devastating leaks.
+    Yes, Fabrikam can use industry-standard X.509 CA certificates for device authentication. However, merely using the X.509 CA certificate alone does not ensure the absolute security of the devices. As with any digital certificate, its public information is susceptible to eavesdropping. An eavesdropper can intercept the certificate and try to use it as its own, attempting to register their unauthorized device with IoT Central. The IoT Hub portion of the IoT Central architecture combats eavesdropping through a [proof-of-possession (PoP) flow](https://tools.ietf.org/html/rfc5280#section-3.1), by generating a random number to be signed by Fabrikam, using its private key. This proof-of-possession challenge is part of the X.509 CA registration process when a new device is added. Because of this, Fabrikam must make sure the private keys are protected from outsiders who can use them to pass the proof-of-possession challenge. The best way to protect the keys is to use Hardware Secure Modules (HSM)-based silicon chips in their IoT devices, which are capable of internally generating and protecting private keys. When HSM is used in this fashion, the private keys never see the light of day, securing them from potentially devastating leaks.
+
+    If you have not already registered the device that is attempting to connect, it shows up in IoT Central as an Unassociated device on the Device Explorer page. An administrator must associate the device with the appropriate device template and approve it before it can connect to the IoT Central application and send data. An administrator can also block a device through the Device Explorer page so it cannot send data. Blocked devices have a provisioning status of Blocked.
 
 3. What user management options are available for the dashboards? What roles are defined?
+
+    IoT Central simplifies user management by providing a web-based Administration page to add and remove users and assign roles. The user who creates the IoT Central application is automatically added as an administrator. All users must use either a Microsoft Account (MSA) or Azure Active Directory (Azure AD) account to connect to the application. Users are added through the Users pane within the Administration page in the IoT Central application. Azure AD groups are not currently supported. Users can be added in bulk by entering the user IDs separated by semi-colons within the User ID field of the Add User form.
+
+    Three roles can be assigned to users:
+
+    - **Administrator**: These users have access to all functionality in an application. There must always be at least one user in this role.
+
+    - **Application Builder**: Users in this role can do everything in an application except administering the application; they do not have access to the Administration section of the application.
+
+    - **Application Operator**: These users cannot make changes to device templates nor administer the application. Operators can add and delete devices, manage device sets, and run analytics and jobs. Operators do not have access to the Application Builder and Administration pages.
 
 _Alerts and integrations_
 

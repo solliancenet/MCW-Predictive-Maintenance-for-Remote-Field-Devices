@@ -174,13 +174,11 @@ _Device and metadata management_
 
 _Dashboards and telemetry analysis_
 
-1. How would you propose Fabrikam create visualizations for each rod pump?
+1. How would you propose Fabrikam create visualizations for each rod pump? What options are available to view and filter the device telemetry?
 
 2. How can they create shared dashboards, and can users create their own personalized dashboards?
 
-3. What options are available to view and filter device telemetry?
-
-4. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
+3. Can telemetry be automatically exported to external storage for offline batch processing? What other options are available to gain access to telemetry outside of the core IoT solution?
 
 _Security_
 
