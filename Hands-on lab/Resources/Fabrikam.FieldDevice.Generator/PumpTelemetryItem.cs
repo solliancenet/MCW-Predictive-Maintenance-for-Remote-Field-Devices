@@ -7,7 +7,7 @@
         public double PumpRate { get; set; }
         public double TimePumpOn { get; set; }
         public double CasingFriction { get; set; }
-
+       
         public PumpTelemetryItem(double motorPowerkW, double motorSpeed,
             double pumpRate, double timePumpOn, double casingFriction)
         {
