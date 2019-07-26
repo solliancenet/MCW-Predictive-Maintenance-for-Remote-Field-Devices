@@ -119,8 +119,6 @@ This final chart shows the telemetry for these five components when there is an 
 
 1. Is there an out of the box solution we can use to jump-start the creation of the solution?
 2. We are worried about being constrained by a "black box" if we go with a SaaS solution. Do we have access to all of our collected telemetry we can use for external workloads?
-3. How would alerts be generated and delivered when the automated monitoring predicts a failure? What integration options do we have?
-4. How can the operators view the current status of the rod pumps in a single dashboard?
 
 ### Infographic for common scenarios
 

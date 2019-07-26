@@ -243,8 +243,6 @@ This final chart shows the telemetry for these five components when there is an 
 
 1. Is there an out of the box solution we can use to jump-start the creation of the solution?
 2. We are worried about being constrained by a "black box" if we go with a SaaS solution. Do we have access to all of our collected telemetry we can use for external workloads?
-3. How would alerts be generated and delivered when the automated monitoring predicts a failure? What integration options do we have?
-4. How can the operators view the current status of the rod pumps in a single dashboard?
 
 ### Infographic for common scenarios
 
@@ -623,12 +621,15 @@ _Alerts and integrations_
 ## Checklist of preferred objection handling
 
 1. Is there an out of the box solution we can use to jump-start the creation of the solution?
+
+    Yes! Azure IoT Central is a SaaS-based, end-to-end IoT platform that allows Fabrikam to quickly create their solution with no cloud-development experience required. If they want more customization and have the required cloud development expertise, they can use Azure IoT solution accelerators to jump-start a PaaS-based solution.
+
 2. We are worried about being constrained by a "black box" if we go with a SaaS solution. Do we have access to all of our collected telemetry we can use for external workloads?
-3. How would alerts be generated and delivered when the automated monitoring predicts a failure? What integration options do we have?
-4. How can the operators view the current status of the rod pumps in a single dashboard?
+
+    Yes, all telemetry can be accessed for external workloads after enabling the continuous data export feature in IoT Central. It is important to remember that data sent to IoT Central before enabling this feature is inaccessible. The data export options include Azure Blob storage, Azure Event Hubs, and Azure Service Bus.
 
 ## Customer quote (to be read back to the attendees at the end)
 
-"Quote goes here ..."
+"When we started looking at SaaS-based IoT solutions, we were worried. Most of these options are either clumsy to work with or locked down too tight for meaningful customizations. We weren't prepared to invest the time and resources to stand up a team of IoT and cloud developers to build our solution from scratch. IoT Central met our needs perfectly, and we were able to get up and running ahead of schedule!"
 
 --- Peter Guerin, CTO, Fabrikam, Inc.
