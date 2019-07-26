@@ -544,6 +544,10 @@ _Device and metadata management_
 
     Use commands to run commands on the device remotely from IoT Central instantly. The application code on the IoT device watches for commands sent from IoT Central. When it receives a command, code is executed to perform control actions on that device or other devices to which it has access. For example, create a command to restart the device remotely. Once created, the operator will see the command in the Device Explorer and use it to run the command when the device is connected instantly.
 
+    In Fabrikam's case, they want to issue commands to the rod pump controller from the cloud. To do this, Fabrikam created a new command that sends a power cycle command to the controller. Included in the device telemetry is the power state that indicates whether the power to the pump is on. In the screenshot below, the telemetry displayed in the line chart shows a steady decrease in all levels, indicating impending failure. The red box shows the power state change from ON to OFF, including a gap in telemetry, indicated by the dotted lines. When the power cycled back on, the pump's telemetry showed normal operating levels.
+
+    ![The rod pump telemetry is shown with the information described in the previous paragraph.](media/rod-pump-telemetry-with-restart.png "Rod pump telemetry with restart")
+
 _Dashboards and telemetry analysis_
 
 1. How would you propose Fabrikam create visualizations for each rod pump?
