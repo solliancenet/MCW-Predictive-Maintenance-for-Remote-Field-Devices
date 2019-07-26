@@ -162,7 +162,7 @@ _Device and metadata management_
 
 1. How do you connect devices one at a time?
 
-2. How do you connect multiple devices at scale?
+2. How do you connect multiple devices at scale? What options are there to secure device connections?
 
 3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to automatically connect to the cloud when turned on, or do they all have to be registered during installation?
 

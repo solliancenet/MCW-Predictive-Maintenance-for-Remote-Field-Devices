@@ -286,7 +286,7 @@ _Device and metadata management_
 
 1. How do you connect devices one at a time?
 
-2. How do you connect multiple devices at scale?
+2. How do you connect multiple devices at scale? What options are there to secure device connections?
 
 3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to automatically connect to the cloud when turned on, or do they all have to be registered during installation?
 
@@ -366,11 +366,14 @@ Directions: Tables reconvene with the larger group to hear the facilitator/SME s
 
 ## Additional references
 
-| Description                         | Links                                                                                                     |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| About IoT Central                   | <https://docs.microsoft.com/en-us/azure/iot-central/overview-iot-central>                                 |
-| About IoT Hub                       | <https://docs.microsoft.com/azure/iot-hub/iot-hub-what-is-iot-hub>                                        |
-| What are IoT solution accelerators? | <https://docs.microsoft.com/en-us/azure/iot-accelerators/iot-accelerators-what-are-solution-accelerators> |
+| Description                                                           | Links                                                                                                     |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| About IoT Central                                                     | <https://docs.microsoft.com/en-us/azure/iot-central/overview-iot-central>                                 |
+| About IoT Hub                                                         | <https://docs.microsoft.com/azure/iot-hub/iot-hub-what-is-iot-hub>                                        |
+| What are IoT solution accelerators?                                   | <https://docs.microsoft.com/en-us/azure/iot-accelerators/iot-accelerators-what-are-solution-accelerators> |
+| Azure IoT Hub Device Provisioning Service (DPS)                       | <https://docs.microsoft.com/azure/iot-dps/about-iot-dps>                                                  |
+| Conceptual understanding of X.509 CA certificates in the IoT industry | <https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-x509ca-concept>                                   |
+| Creating a certificate chain when signing devices                     | <https://github.com/Azure/azure-iot-sdk-c/blob/master/tools/CACertificates/CACertificateOverview.md>      |
 
 # Predictive Maintenance for Remote Field Devices whiteboard design session trainer guide
 
@@ -444,9 +447,16 @@ _IoT options in Azure_
 
 3. Would you recommend SaaS or PaaS for this customer situation? What are the pros and cons of each?
 
-    Fabrikam stated their interest in a SaaS-based solution that provides a fully managed, end-to-end IoT solution without required cloud-based IoT architecture and development expertise. Azure IoT Central's features meet the base requirements for their PoC, and can easily scale to manage and ingest telemetry from millions of devices. In addition, IoT Central provides a very simple and predictable, device-based pricing structure. This allows them to project costs and provide a transparent breakdown of fees to their customers.
+    Fabrikam stated their interest in a SaaS-based solution that provides a fully managed, end-to-end IoT solution without required cloud-based IoT architecture and development expertise. Azure IoT Central's features meet the base requirements for their PoC, and can easily scale to manage and ingest telemetry from millions of devices. Also, IoT Central provides a straightforward and predictable, device-based pricing structure. This pricing structure allows them to project costs and provide a transparent breakdown of fees to their customers.
 
-    There are some drawbacks to using IoT Central, as with any SaaS-based solution. The primary drawback is limited flexibility because the underlying infrastructure is not customizable because its components are not exposed. Fabrikam will need to find workarounds if ever their requirements change and they need customization beyond what is provided by IoT Central's interface and SDK. Another limiting factor is how data is accessed. Although all the data is stored within a time series data store, you only have access to it either through IoT Central's UI, which offers flexible filtering and visualizations, or by enabling continuous export of data to Azure Storage, Azure Event Hubs, or Azure Service Bus. You cannot directly query the data store from an external application.
+    When compared to using PaaS-based options for Fabrikam's IoT project, IoT Central offers the following benefits:
+
+      - It reduces the device management burden through an intuitive interface and simplified device registration flow.
+      - Reduces operational costs and overhead by abstracting away the underlying architecture, allowing Fabrikam to focus on customizing the application, managing devices, and writing device application code.
+      - Uses industry-leading services on Azure without requiring deep knowledge of these components, such as Azure IoT Hub and Azure Time Series Insights (time-series data store).
+      - Automatically provides end-to-end encryption, X.509 CA certificate management, user management, and other security features.
+
+    There are some drawbacks to using IoT Central, as with any SaaS-based solution. The primary drawback is limited flexibility because the underlying infrastructure is not customizable because its components are not exposed. Fabrikam will need to find workarounds if ever their requirements change, and they need customization beyond what is provided by IoT Central's interface and SDK. Another limiting factor is how data is accessed. Although all the data is stored within a time-series data store, you only have access to it either through IoT Central's UI, which offers flexible filtering and visualizations, or by enabling continuous export of data to Azure Storage, Azure Event Hubs, or Azure Service Bus. You cannot directly query the datastore from an external application.
 
     Fabrikam could opt to create an IoT solution from scratch with IoT Hub and their own web applications and related services, or start with an Azure IoT solution accelerator for maximum flexibility. If they go this route, they have full control over the development and deployment lifecycle of their solution, including automated deployments to development, staging, and production environments. The primary drawbacks to this approach are increased time to develop and deploy the solution, required expertise for end-to-end IoT development and customization, and a more opaque pricing structure where they must fine-tune the services to control costs.
 
@@ -454,15 +464,85 @@ _Device and metadata management_
 
 1. How do you connect devices one at a time?
 
-2. How do you connect multiple devices at scale?
+    Connect single devices for rapid testing and building small proofs of concept. Since Azure IoT Central uses Azure IoT Hub under the covers, you use the [Azure IoT Hub Device Provisioning Service (DPS)](https://docs.microsoft.com/azure/iot-dps/about-iot-dps) to manage device registration and connections.
+    
+    The first step is to create a device template in IoT Central. This template defines the device metadata, such as properties and telemetry fields, that are common to one or more IoT devices you connect to IoT Central. The next step is to select the template and add a new real device. The options here are to add a simulated device that IoT Central manages and uses to generate simulated telemetry or a real device. Real devices represent IoT devices that you connect to IoT Central through application code, or credentials flashed to the device. Finally, select the real device in IoT Central and click Connect to display the connection details, Scope ID, Device ID, and Device Primary key. These values are used with the `dps-keygen` command-line [key generator utility](https://github.com/Azure/dps-keygen) to generate a shared access signature (SAS) connection string:
+    
+    `dps-keygen -di:<Device ID> -dk:<Primary or Secondary Key> -si:<Scope ID>`
+    
+    Use the connection string on your device to connect to IoT Central.
 
-3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to automatically connect to the cloud when turned on, or do they all have to be registered during installation?
+2. How do you connect multiple devices at scale? What options are there to secure device connections?
+
+    There are two types of device authentication you can use when connecting devices. For testing and development, use shared access signature (SAS) connection strings. For production workloads, use industry-standard X.509 certificates.
+
+    SAS device keys are generated using the `dps-keygen` command-line [key generator utility](https://github.com/Azure/dps-keygen), along with the group Primary Key value from the Device Connection page under Administration in IoT Central, and the unique, lower-case Device ID for each device you add in bulk:
+
+    `dps-keygen -mk:<Primary_Key(GroupSAS)> -di:<device_id>`
+
+    Flash each IoT device with the Scope ID (also found in the Device Connection page), Device ID, and the generated SAS key. When turned on, the device will connect to DPS to retrieve its IoT Central registration information, then connect to the IoT Central application.
+
+    [X.509 Certificate Authority (CA)](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-x509ca-concept) authentication simplifies device identity creation and life-cycle management in the supply chain. This is because X.509 CA certificate has a one-to-many relationship with its downstream services by registering all of your devices with IoT Hub (and by extension, IoT Central) by registering the X.509 CA certificate once. To create a certificate, Fabrikam must first generate a public/private key pair and sign the public key into a certificate. They can purchase the X.509 CA certificate from a public root certificate authority, or create one through a self-signed process. They may use a self-signed certificate for testing until they are ready to purchase an authority certificate. However, if they do not intend to connect their IoT devices to any third party services outside of IoT Central, then they can use the self-signed X.509 CA certificate in production.
+
+    When multiple manufacturers are involved in creating IoT devices, Fabrikam, as the owner of the X.509 CA certificate, can cryptographically sign an intermediate CA. This intermediate CA can sign another intermediate CA who works on the next phase of the IoT device manufacturing process, and so on. This process completes when the last intermediate CA signs a device certificate. This cascaded chain of certificates is known as a certificate chain of trust. The device certificate, also called a leaf certificate, must have its _Subject Name_ set to the Device ID.
+
+    To use X.509 CA certificates in IoT Central, navigate to the Device Connection page under Administration and select Certificates (X.509) to add the root or intermediate certificate. The next step requires you to verify the certificate by generating a verification code and using it to create an X.509 verification certificate. This step ensures Fabrikam is the certificate owner by verifying they possess the certificate's private key. The device leaf certificates need to be generated using this uploaded root or intermediate certificate. As mentioned before, the CNAME value (or Subject Name) of each leaf certificate needs to be set to the unique Device ID. Finally, program the IoT devices with provisioning service information and add the leaf certificate. As with the SAS key process, when the device is switched on for the first time, it retrieves its connection information to Fabrikam's IoT Central application from DPS.
+
+    Whether using SAS or X.509 certificates for device authentication, the process is the same to import and register devices in bulk. Create a CSV file to import device IDs and device names (`IOTC_DeviceID` and `IOTC_DeviceName`, respectively). This file can be uploaded in the Device Explorer of the IoT Central application, either within a device template or under unassociated devices. This process creates entries in IoT Central for the devices. To connect your real devices to their registration entries in IoT Central, you can export the Device IDs, Device Names, SAS connection strings, and X.509 certificate thumbprints in bulk by using the export option in Device Explorer.
+
+3. When Fabrikam is ready to mass manufacture devices, can they configure their devices to connect to the cloud when turned on automatically, or do they all have to be registered during installation?
+
+    The bulk device registration and provisioning steps described in the previous section require Fabrikam to register devices in IoT Central as a first step before any new devices can connect. This works fine when adding tens of devices, but what if they are ready to mass-produce and connect thousands of devices? Fortunately, IoT Central provides a method for connecting devices without requiring the registration step. To do this, Fabrikam generates credentials and configures its devices in the factory. When these devices turn on for the first time, they automatically connect to the IoT Central application. The final step is for an IoT Central operator to approve the device so it can start sending data.
+
+    The steps to complete this process are as follows:
+
+    ![The steps shown are outlined below this image.](media/iot-device-connection-flow.png "Steps to connect IoT devices without registration")
+
+    - _Configure and retrieve device connection settings in IoT Central_: For X.509 certificate authentication, add and verify the root or intermediate certificate. For SAS, copy the group SAS primary key from the Device Connection page under Administration.
+    - _Generate device credentials_: For X.509, generate leaf certificates with the root/intermediate certificate added to IoT Central. Use the lower-case Device ID as the CNAME. For SAS, use the `dps-keygen` command-line tool to generate device SAS keys.
+    - _Flash unique credentials on the device_: Flash each device with the Scope ID, Device ID, and the X.509 device leaf certificate or SAS key.
+    - _Turn on the device_: Program the IoT devices with provisioning service information. When a device is first turned on, it connects to DPS to retrieve its IoT Central registration information.
+    - _Associate the devices to a template and approve the connection_: All devices initially show up under Unassociated devices within IoT Central's Device Explorer with a _Registered_ provisioning status. Associate the devices to a device template and approve them. This changes the provisioning status to _Provisioned_, allowing them to retrieve a connection string from IoT Hub and start sending data.
 
 4. What communication protocols are supported? What if they are using devices that do not support those protocols?
 
+    IoT Central supports the following protocols:
+
+    - MQTT
+    - AMQP
+    - HTTPS
+
+    There are many machine-to-machine protocols in use today that are standard across industrial automation industries and manufacturing. Fabrikam is likely using components in their rod pumps that adhere to the OPC Unified Architecture (OPC UA), which uses a high-performance binary protocol (`opc.tcp://`) or HTTP protocol. If so, these devices can connect to IoT Central using the HTTP protocol, but the binary protocol is typically preferred. Another common protocol is SCADA, which has been in use for years but is incompatible with direct communication to IoT Central. If Fabrikam is required to use devices that are not natively supported by IoT Central, or by extension, IoT Hub, they can use an Azure IoT Edge device to perform protocol conversion. IoT Edge devices can do other things besides protocol conversion, such as pre-processing and analyzing data "at the edge", before sending it to the cloud.
+
+    As of this writing, IoT Central does not natively support connecting IoT Edge devices. In the interim, Fabrikam can use an [Azure IoT Central Edge Device Bridge module](https://github.com/iotblackbelt/EdgeIOTCBridgeSolution) to connect IoT Edge devices. The current limitation is that device communication is unidirectional. This means that Fabrikam will not be able to send cloud-to-device messages to any devices connected to IoT Edge for command and control.
+
 5. Is there a way to define common metadata for devices, such as location and serial number? How is this metadata applied to devices, and how can developers set this metadata programmatically?
 
+    Device management in IoT Central is model-based. This means that you do not need to program the cloud-end of the solution to ingest, process, and display device information and telemetry. You also do not need to program cloud-to-device message sending at this end of the spectrum. The model refers to what is called a device template in IoT Central. It is with the device template that you define the metadata for a set of related devices:
+
+    - _Measurements_: Add fields for the device telemetry, defining the display name, field name (as sent by the device), and data type.
+    - _Settings_: Settings are used to control a device by providing operators with inputs to the device. For instance, the pump rate can be adjusted by providing a numeric value that gets sent to the pump controller, which it uses to adjust the crank arm rotation rate. Settings can be in one of the three following states: `Synced`, `Pending`, and `Error`.
+    - _Properties_: Used to specify metadata, such as serial number, location, IP address, or other data associated with a device.
+    - _Rules_: Apply automated behavior based on device data. Rules are what Fabrikam can use to send alerts when pump telemetry crosses predefined thresholds.
+    - _Dashboards_: Device-level dashboards that display customized views of the device, like aggregate values over time slices, or a map of the device's location.
+
+    An IoT device is associated with a device template, allowing it to send telemetry, set properties, receive settings and commands, and appear in dashboards and other visualizations in IoT Central. Fabrikam writes code that runs on their IoT devices to perform these interactions. The code can be written in any language that is compatible with the device platform. However, Azure IoT software development kits (SDKs) can be used to accelerate and simplify device application development. There are [SDKs available](https://github.com/Azure/azure-iot-sdks) in C, Python, Node.js, Java, and .NET. Developers use the SDKs to connect devices, send device telemetry, set properties, and receive command messages and settings.
+
+    Below is a screenshot of device properties that were set by application code running on a rod pump device:
+
+    ![Device properties for the DEVICE001 rod pump device are displayed.](media/device-template-properties.png "Device properties")
+
+    Device templates come with automatic versioning. This is to help prevent breaking changes from impacting connected devices because often, changes that trigger a version change also require code changes on the devices that are using the template. Versioning helps you rapidly iterate changes by testing new device code on new template versions. When you are ready to apply code changes to your other devices, you deploy the updated device code and migrate the updated devices to the new device template version.
+
+    Changes that prompt a version change are adding or deleting a required property, changing the field name of a property, adding or deleting a setting, or changing the field name of a setting.
+
 6. How can control messages be sent to rod pump controllers from the cloud to perform tasks like turn off the pump engine or change settings?
+
+    Use the IoT Central portal to edit a device template to add settings and configure commands.
+    
+    Settings control a device and allow operators to apply persistent settings to the device through the IoT Central application. These settings, which can be anything you want, such as temperature or fan speed, are applied to the device, even after it restarts. Define a setting by editing a device template, choosing the Settings tab, then entering values for the setting name, description, field name, unit of measure (RPM, psi, etc.), data type (e.g. number, text, date, or toggle), initial value, and minimum or maximum values allowed, if applicable. Once added, an operator can use the Device Explorer to change the setting on a device.
+
+    Use commands to run commands on the device remotely from IoT Central instantly. The application code on the IoT device watches for commands sent from IoT Central. When it receives a command, code is executed to perform control actions on that device or other devices to which it has access. For example, create a command to restart the device remotely. Once created, the operator will see the command in the Device Explorer and use it to run the command when the device is connected instantly.
 
 _Dashboards and telemetry analysis_
 
@@ -479,6 +559,8 @@ _Security_
 1. Is device data encrypted both in transit and at rest?
 
 2. Can Fabrikam use standard certificates for device authentication? How do Fabrikam's administrators approve new devices that attempt to connect to the cloud?
+
+    Yes, Fabrikam can use industry-standard X.509 CA certificates for device authentication. However, simply using the X.509 CA certificate alone does not ensure absolute security of the devices. As with any digital certificate, its public information is susceptible to eavesdropping. An eavesdropper can intercept the certificate and try to use it as its own, attempting to register their unauthorized device with IoT Central. The IoT Hub portion of the IoT Central architecture combats eavesdropping through a [proof-of-possession (PoP) flow](https://tools.ietf.org/html/rfc5280#section-3.1), by generating a random number to be signed by Fabrikam, using its private key. This proof-of-possession challenge is part of the X.509 CA registration process when a new device is added. Because of this, Fabrikam must make sure the private keys are protected from outsiders who can use them to pass the proof-of-possession challenge. The best way to protect the keys is to use Hardware Secure Modules (HSM)-based silicon chips in their IoT devices, which are capable of internally generating and protecting private keys. When HSM is used in this fashion, the private keys never see the light of day, securing them from potentially devastating leaks.
 
 3. What user management options are available for the dashboards? What roles are defined?
 
