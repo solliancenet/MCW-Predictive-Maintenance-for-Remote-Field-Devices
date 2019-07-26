@@ -600,7 +600,25 @@ _Alerts and integrations_
 
 1. Fabrikam wants to use their knowledge of rod pump component operating parameters and proactively monitor telemetry for immediate or impending failure. How can they set thresholds for sensor data and trigger alerts when those thresholds are crossed?
 
+    Fabrikam provided you with sample telemetry and the fields and thresholds they deem critical for monitoring and alerting when device signals fall below the thresholds. They need a way to create alerts and actions on these indicators to prevent damage to failing pump components. As a reminder, they provided the following information:
+
+    | Field          | Type    | Normal measurement  | Failure threshold                     | Description                                                                                                                                                                                                                                                   |
+    | -------------- | ------- | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | MotorPowerkW   | Numeric | ~70kW               | ~30kW                                 | Measured in Kilowatts (kW); The power output of the motor should be steady, but will drop if there is a problem                                                                                                                                               |
+    | MotorSpeed     | Numeric | ~200 RPM            | ~80 RPM                               | Measured in RPM (including slip); Can change based on density of oil. Lower density causes this to go up (like if you have pockets of gas and it jumps up). If there's a failure it will go down below the normal operating average.                          |
+    | CasingFriction | Numeric | ~1450 psi           | ~830 psi                              | Measured in PSI (psi); The pressure will drop if a fissure is developing in the casing, indicating a failure.                                                                                                                                                 |
+    | PumpRate       | Numeric | ~60 SPM             | ~25 SPM                               | Speed calculated over the time duration between the last two times the crank arm has passed the proximity sensor measured in Strokes Per Minute (SPM) - minimum 0.0, maximum 100.0. A significant slow down could be an indicator of failure within the pump. |
+    | TimePumpOn     | Numeric | Amplitude: 0 - ~800 | Amplitude: 0 - ~340; higher frequency | Number of minutes the pump has been on. This should be a steady sawtooth pattern with a regular cadence of the pump cycling power. A consistently shorter than average cadence can indicate problems with the pump.                                           |
+
+    In IoT Central, you use rules to monitor devices in near-real-time and automatically send alerts or invoke other types of actions. Fabrikam needs to edit the device template for rod pumps within the IoT Central application and create new event rules for each of the fields listed above that define clear alert thresholds.
+
+    For example, create a new telemetry rule to monitor the motor power and give it a descriptive name, like *Low Motor Power (kW)*. Set the condition on the `MotorPowerKw` field where the average value is less than 30 within an aggregation time window of 5 minutes. Each of these rules can invoke actions, which will be explained in more detail in the next section.
+
+    ![The Low Motor Power telemetry rule is displayed.](media/telemetry-rule.png "Configure telemetry rule")
+
 2. What options can they use to send alerts? They are interested in available integrations that may work with services they already use, like Office 365 or Dynamics CRM.
+
+    The rules Fabrikam creates for monitoring telemetry data for crossing thresholds can invoke one or more actions when the condition is met. The choice of actions is sending an email from IoT Central, invoking a WebHook linked to any address, triggering an Azure Function for serverless processing, triggering an Azure Logic App, notifying an Azure Monitor Action Group, or running a Microsoft Flow workflow. With these options, you can create workflows and perform actions in a wide variety of ways. Azure Logic Apps and Microsoft Flow provide code-free visual interfaces that jointly integrate with hundreds of Azure and 3rd-party services, including Office 365 and Dynamics. Azure Functions enable serverless processing using .NET, Node.js, Python, and PowerShell to handle events on a low-cost and powerful platform.
 
 ## Checklist of preferred objection handling
 
