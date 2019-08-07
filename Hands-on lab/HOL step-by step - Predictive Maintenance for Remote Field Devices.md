@@ -27,34 +27,34 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- TOC -->
 
-- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#Predictive-Maintenance-for-Remote-Field-Devicesmhands-on-lab-step-by-step)
-  - [Abstract and learning objectives](#Abstract-and-learning-objectives)
-  - [Overview](#Overview)
-  - [Solution architecture](#Solution-architecture)
-  - [Requirements](#Requirements)
-  - [Exercise 1: Configuring IoT Central with devices and metadata](#Exercise-1-Configuring-IoT-Central-with-devices-and-metadata)
-    - [Task 1: Model the telemetry data](#Task-1-Model-the-telemetry-data)
-      - [Telemetry Schema](#Telemetry-Schema)
-    - [Task 2: Create an IoT Central Application](#Task-2-Create-an-IoT-Central-Application)
-    - [Task 3: Create the Device Template](#Task-3-Create-the-Device-Template)
-    - [Task 4: Create and provision real devices](#Task-4-Create-and-provision-real-devices)
-  - [Exercise 2: Running the Rod Pump Simulator](#Exercise-2-Running-the-Rod-Pump-Simulator)
-    - [Task 1: Generate device connection strings](#Task-1-Generate-device-connection-strings)
-    - [Task 2: Open the Visual Studio solution, and update connection string values](#Task-2-Open-the-Visual-Studio-solution-and-update-connection-string-values)
-    - [Task 3: Run the application](#Task-3-Run-the-application)
-    - [Task 4: Interpret telemetry data](#Task-4-Interpret-telemetry-data)
-    - [Task 5: Restart a failing pump remotely](#Task-5-Restart-a-failing-pump-remotely)
-  - [Exercise 3: Creating a notification action on a telemetry rule](#Exercise-3-Creating-a-notification-action-on-a-telemetry-rule)
-    - [Task 1: Create a workflow using Microsoft Flow](#Task-1-Create-a-workflow-using-Microsoft-Flow)
-  - [Exercise 4: Creating a device set](#Exercise-4-Creating-a-device-set)
-    - [Task 1: Create a device set using a filter](#Task-1-Create-a-device-set-using-a-filter)
-  - [Exercise 5: Creating a useful dashboard](#Exercise-5-Creating-a-useful-dashboard)
-    - [Task 1: Clearing out the default dashboard](#Task-1-Clearing-out-the-default-dashboard)
-    - [Task 2: Add your company logo](#Task-2-Add-your-company-logo)
-    - [Task 3: Add a list of Texas Rod Pumps](#Task-3-Add-a-list-of-Texas-Rod-Pumps)
-    - [Task 3: Add a map displaying the power state of DEVICE001](#Task-3-Add-a-map-displaying-the-power-state-of-DEVICE001)
-  - [After the hands-on lab](#After-the-hands-on-lab)
-    - [Task 1: Delete the IoT Central application](#Task-1-Delete-the-IoT-Central-application)
+- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#predictive-maintenance-for-remote-field-devicesmhands-on-lab-step-by-step)
+  - [Abstract and learning objectives](#abstract-and-learning-objectives)
+  - [Overview](#overview)
+  - [Solution architecture](#solution-architecture)
+  - [Requirements](#requirements)
+  - [Exercise 1: Configuring IoT Central with devices and metadata](#exercise-1-configuring-iot-central-with-devices-and-metadata)
+    - [Task 1: Model the telemetry data](#task-1-model-the-telemetry-data)
+      - [Telemetry Schema](#telemetry-schema)
+    - [Task 2: Create an IoT Central Application](#task-2-create-an-iot-central-application)
+    - [Task 3: Create the Device Template](#task-3-create-the-device-template)
+    - [Task 4: Create and provision real devices](#task-4-create-and-provision-real-devices)
+  - [Exercise 2: Running the Rod Pump Simulator](#exercise-2-running-the-rod-pump-simulator)
+    - [Task 1: Generate device connection strings](#task-1-generate-device-connection-strings)
+    - [Task 2: Open the Visual Studio solution, and update connection string values](#task-2-open-the-visual-studio-solution-and-update-connection-string-values)
+    - [Task 3: Run the application](#task-3-run-the-application)
+    - [Task 4: Interpret telemetry data](#task-4-interpret-telemetry-data)
+    - [Task 5: Restart a failing pump remotely](#task-5-restart-a-failing-pump-remotely)
+  - [Exercise 3: Creating a notification action on a telemetry rule](#exercise-3-creating-a-notification-action-on-a-telemetry-rule)
+    - [Task 1: Create a workflow using Microsoft Flow](#task-1-create-a-workflow-using-microsoft-flow)
+  - [Exercise 4: Creating a device set](#exercise-4-creating-a-device-set)
+    - [Task 1: Create a device set using a filter](#task-1-create-a-device-set-using-a-filter)
+  - [Exercise 5: Creating a useful dashboard](#exercise-5-creating-a-useful-dashboard)
+    - [Task 1: Clearing out the default dashboard](#task-1-clearing-out-the-default-dashboard)
+    - [Task 2: Add your company logo](#task-2-add-your-company-logo)
+    - [Task 3: Add a list of Texas Rod Pumps](#task-3-add-a-list-of-texas-rod-pumps)
+    - [Task 3: Add a map displaying the power state of DEVICE001](#task-3-add-a-map-displaying-the-power-state-of-device001)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+    - [Task 1: Delete the IoT Central application](#task-1-delete-the-iot-central-application)
 
 <!-- /TOC -->
 
@@ -323,9 +323,13 @@ Make note of the connection string for the device.
 
 ![Updated appsettings.json](../Media/appsettings-updated.png)
 
+3. Open *Program.cs*, go to line 141 and you will find the *SetupDeviceRunTasks* method. This method is responsible for creating the source code representations of the devices that we have defined earlier in the lab. Each of these devices is identified by its connection string. Note that DEVICE001 is defined as the pump that will gradually fail, DEVICE002 as a healthy pump, and DEVICE003 as a pump that will fail immediately after a specific amount of time. Line 164 also adds an event handler that gets fired every time the Power State for a pump changes. The power state of a pump gets changed via a cloud to device command - we will be visiting this concept later on in this lab.
+
+4. Open *Device.cs*, this class represents a device in the field. It encapsulates the properties (serial number and IP address) that are expected in the properties for the device in the cloud. It also maintains its own power state. Line 86 shows the *SendDevicePropertiesAndInitialState* method which updates the reported properties from the device to the cloud. This is also refered to as *Device Twins*.  Line 131 shows the *SendEvent* method that sends the generated telemetry data to the cloud.
+
 ### Task 3: Run the application
 
-1. Using Visual Studio, Debug the current application by pressing *F5*.
+1. Using Visual Studio Code, Debug the current project by pressing *F5*.
 
 2. Once the menu is displayed, select option 1 to generate and send telemetry to IoT Central
 
