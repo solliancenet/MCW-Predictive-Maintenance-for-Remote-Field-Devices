@@ -27,29 +27,34 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- TOC -->
 
-- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#predictive-maintenance-for-remote-field-devicesmhands-on-lab-step-by-step)
-  - [Abstract and learning objectives](#abstract-and-learning-objectives)
-  - [Overview](#overview)
-  - [Solution architecture](#solution-architecture)
-  - [Requirements](#requirements)
-  - [Before the hands-on lab](#before-the-hands-on-lab)
-  - [Exercise 1: Configuring IoT Central with devices and metadata](#exercise-1-configuring-iot-central-with-devices-and-metadata)
-    - [Task 1: Model the telemetry data](#task-1-model-the-telemetry-data)
-      - [Telemetry Schema](#telemetry-schema)
-    - [Task 2: Create an IoT Central Application](#task-2-create-an-iot-central-application)
-    - [Task 3: Create the Device Template](#task-3-create-the-device-template)
-    - [Task 4: Create and provision real devices](#task-4-create-and-provision-real-devices)
-  - [Exercise 2: Running the Rod Pump Simulator](#exercise-2-running-the-rod-pump-simulator)
-    - [Task 1: Generate device connection strings](#task-1-generate-device-connection-strings)
-    - [Task 2: Open the Visual Studio solution, and update connection string values](#task-2-open-the-visual-studio-solution-and-update-connection-string-values)
-    - [Task 3: Run the application](#task-3-run-the-application)
-    - [Task 4: Interpret telemetry data](#task-4-interpret-telemetry-data)
-    - [Task 5: Restart a failing pump remotely](#task-5-restart-a-failing-pump-remotely)
-  - [Exercise 3: Creating a notification action on a telemetry rule](#exercise-3-creating-a-notification-action-on-a-telemetry-rule)
-    - [Task 1: Create a workflow using Microsoft Flow](#task-1-create-a-workflow-using-microsoft-flow)
-  - [After the hands-on lab](#after-the-hands-on-lab)
-    - [Task 1: Task name](#task-1-task-name)
-    - [Task 2: Task name](#task-2-task-name)
+- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#Predictive-Maintenance-for-Remote-Field-Devicesmhands-on-lab-step-by-step)
+  - [Abstract and learning objectives](#Abstract-and-learning-objectives)
+  - [Overview](#Overview)
+  - [Solution architecture](#Solution-architecture)
+  - [Requirements](#Requirements)
+  - [Exercise 1: Configuring IoT Central with devices and metadata](#Exercise-1-Configuring-IoT-Central-with-devices-and-metadata)
+    - [Task 1: Model the telemetry data](#Task-1-Model-the-telemetry-data)
+      - [Telemetry Schema](#Telemetry-Schema)
+    - [Task 2: Create an IoT Central Application](#Task-2-Create-an-IoT-Central-Application)
+    - [Task 3: Create the Device Template](#Task-3-Create-the-Device-Template)
+    - [Task 4: Create and provision real devices](#Task-4-Create-and-provision-real-devices)
+  - [Exercise 2: Running the Rod Pump Simulator](#Exercise-2-Running-the-Rod-Pump-Simulator)
+    - [Task 1: Generate device connection strings](#Task-1-Generate-device-connection-strings)
+    - [Task 2: Open the Visual Studio solution, and update connection string values](#Task-2-Open-the-Visual-Studio-solution-and-update-connection-string-values)
+    - [Task 3: Run the application](#Task-3-Run-the-application)
+    - [Task 4: Interpret telemetry data](#Task-4-Interpret-telemetry-data)
+    - [Task 5: Restart a failing pump remotely](#Task-5-Restart-a-failing-pump-remotely)
+  - [Exercise 3: Creating a notification action on a telemetry rule](#Exercise-3-Creating-a-notification-action-on-a-telemetry-rule)
+    - [Task 1: Create a workflow using Microsoft Flow](#Task-1-Create-a-workflow-using-Microsoft-Flow)
+  - [Exercise 4: Creating a device set](#Exercise-4-Creating-a-device-set)
+    - [Task 1: Create a device set using a filter](#Task-1-Create-a-device-set-using-a-filter)
+  - [Exercise 5: Creating a useful dashboard](#Exercise-5-Creating-a-useful-dashboard)
+    - [Task 1: Clearing out the default dashboard](#Task-1-Clearing-out-the-default-dashboard)
+    - [Task 2: Add your company logo](#Task-2-Add-your-company-logo)
+    - [Task 3: Add a list of Texas Rod Pumps](#Task-3-Add-a-list-of-Texas-Rod-Pumps)
+    - [Task 3: Add a map displaying the power state of DEVICE001](#Task-3-Add-a-map-displaying-the-power-state-of-DEVICE001)
+  - [After the hands-on lab](#After-the-hands-on-lab)
+    - [Task 1: Delete the IoT Central application](#Task-1-Delete-the-IoT-Central-application)
 
 <!-- /TOC -->
 
@@ -63,8 +68,6 @@ Furthermore we will establish threshold rules in the remote monitoring system th
 
 Above and beyond real-time monitoring and mitigating immediate equipment damage through commanding - you will also learn how to apply the historical telemetry data accumulated to identify positive and negative trends that can be used to adjust daily operations for higher throughput and reliability.
 
-TODO: AI/ML abstract
-
 ## Overview
 
 The Predictive Maintenance for Remote Field Devices hands-on lab is an exercise that will challenge you to implement an end-to-end scenario using the supplied example that is based on Azure IoT Central and other related Azure services. The hands-on lab can be implemented on your own, but it is highly recommended to pair up with other members at the lab to model a real-world experience and to allow each member to share their expertise for the overall solution.
@@ -76,12 +79,6 @@ The Predictive Maintenance for Remote Field Devices hands-on lab is an exercise 
 ## Requirements
 
 1.  Number and insert your custom workshop content here . . . 
-
-## Before the hands-on lab
-
-Refer to the Before the hands-on lab setup guide manual before continuing to the lab exercises.
-
-To author: remove this section if you do not require environment setup instructions.
 
 ## Exercise 1: Configuring IoT Central with devices and metadata
 
@@ -320,7 +317,7 @@ Make note of the connection string for the device.
 
 ### Task 2: Open the Visual Studio solution, and update connection string values
 
-1.  Using Visual Studio 2019, open the /Hands-on lab/Resources/Fabrikam.FieldDevice.sln solution.
+1.  Using Visual Studio Code, open the /Hands-on lab/Resources/Fabrikam.FieldDevice.Generator folder.
 
 2. Open *appsettings.json* and copy & paste the connection strings that you generated in Task 1 into this file.
 
@@ -436,26 +433,127 @@ Earlier in the lab, we created Rules in the Rod Pump device template so that we 
 
 ![Flow Email Notification](../Media/flow-email-notification.png)
 
+## Exercise 4: Creating a device set 
+
+Device sets allow you to create logical groupings of IoT Devices in the field by the properties that defined them. In this case, we will want to create a device set that contains only the rod pumps located in the state of Texas (this will exclude the simulated Rod Pump). 
+
+### Task 1: Create a device set using a filter
+
+1. In the left-hand menu, select the *Device sets* menu item. You will see a single default device set in the list.Press the *+ New* button in the upper right-hand side of the listing.
+
+![Device set listing](../Media/device-set-list.png)
+
+2. In the field, all Texas pumps are located in the 192.168.1.* subnet, so we will create a filter to include only those pumps in this device set. Create the Device set with a condition as follows:
+
+![New device set](../Media/new-device-set.png)
+
+| Field               | Value                      |
+|---------------------|----------------------------|
+| Device Set Name     | Texas Rod Pumps            |
+| Description         | Rod pumps located in Texas |
+| Device Template     | Rod Pump (1.0.0)           |
+| Condition: Property | IP Address                 |
+| Condition: Operator | contains                   |
+| Condition: Value    | 192.168.1.                 |
+
+3. Note how the device list for this device set is automatically filtered to include only the real devices based on their IP Address. You are now able to act upon this group of devices as a single unit in IoT Central.
+
+![Texas Rod Pumps](../Media/texas-rod-pump-devices.png)
+
+4. Similar to devices, you are also able to create a dashboard specific to this Device Set. Press the *Dashboard* tab from the top menu, then press the *Edit* button on the right-hand side of the screen.
+
+![Device Set Dashboard Edit](../Media/device-set-dashboard-edit.png)
+
+5. In this case, we will add a map that will show the location and current power state of each rod pump in the device set. From the *Library* menu, select *Map*
+
+![Device set dashboard add map](../Media/device-set-add-map.png)   
+
+6. Configure the map as follows, and press *Save*:
+
+| Field             | Value                       |
+|-------------------|-----------------------------|
+| Device Template   | Rod Pump (1.0.0)            |
+| Device Instance   | Rod Pump - DEVICE001        |
+| Title             | Rod Pump - DEVICE001 Status |
+| Location          | Rod Pump Location           |
+| State Measurement | Power State                 |
+
+![Device set configure map](../Media/device-set-configure-map.png)
+
+7. End Dashboard editing by pressing the *Done* button on upper-right corner of the dashboard editor.
+
+![Device set dashboard complete editing](../Media/device-set-dashboard-done.png)
+
+8. Observe how the device set now has a map displaying markers for each device in the set. Feel free to adjust to zoom to better infer their location.
+
+## Exercise 5: Creating a useful dashboard
+
+One of the main features of IoT Central is the ability to visualize the health of your IoT system at a glance. Creating a customized dashboard that best fits your business is instrumental in improving business processes. In this exercise, we will go over adding a main dashboard that will be displayed upon entry to the IoT Central application.
+
+### Task 1: Clearing out the default dashboard
+
+1. In the left-hand menu, press the *Dashboard* item. Then, in the upper right corner of the dashboard - press the *Edit* button.
+   
+![Edit dashboard](../Media/dashboard-edit-button.png)
+
+2. Press the *X* on each tile that you do not wish to see on the dashboard to remove them. The *X* will display when you hover over the tile.
+
+![Delete dashboard tile](../Media/delete-dashboard-card.png)
+   
+### Task 2: Add your company logo
+
+1. Remaining in the edit mode of the dashboard, select *Image* from the *Library* menu.
+
+![Dashboard library Image](../Media/dashboard-library-image.png)
+
+2. Configure the logo with the following file */Media/fabrikam-logo.png*.
+
+![Configure logo image](../Media/configure-dashboard-logo.png)
+
+3. Resize the logo on the dashboard using the handle on the lower right of the logo tile.
+
+![Resize the logo](../Media/logo-resize.png)
+
+### Task 3: Add a list of Texas Rod Pumps
+
+In the previous exercise, we created a device set that contains the devices located in Texas. We will leverage this device set to display this filtered information.
+
+1. Remaining in the edit dashboard mode, select *Device Set Grid* from the *Library* menu.
+2. Configure the device list by selecting the *Texas Rod Pumps* Device Set, and assigning it the title of *Texas Rod Pumps*.
+3. Add columns by pressing the *Add/Remove*, we will add *Device ID* and *IP Address*.
+4. Press the *Save* button to add the tile to the dashboard.
+   
+![Configure list](../Media/device-list-configure1.png)
+
+![Dashboard in progress](../Media/dashboard-inprogress-1.png)
+
+### Task 3: Add a map displaying the power state of DEVICE001
+It is beneficial to see the location and power state of certain critical Texas rod pumps. We will add a map that will display the location and current power state of DEVICE001.
+
+1. Select *Map* from the *Library* menu, configure the map as follows, and press *Save*:
+   
+| Field             | Value                       |
+|-------------------|-----------------------------|
+| Device Template   | Rod Pump (1.0.0)            |
+| Device Instance   | Rod Pump - DEVICE001        |
+| Title             | Rod Pump - DEVICE001 Status |
+| Location          | Rod Pump Location           |
+| State Measurement | Power State                 |
+   
+![Configure Map](../Media/dashboard-configure-map.png)
+
+![Completed Dashboard](../Media/completed-dashboard.png)
+
+2. Press the *Done* button in the upper right corner of the Dashboard to finish editing.
+
+![Done dashboard editing](../Media/done-dashboard-editing.png)   
+
 ## After the hands-on lab 
 
 Duration: X minutes
 
-\[insert your custom Hands-on lab content here . . .\]
+### Task 1: Delete the IoT Central application
 
-### Task 1: Task name
-
-1.  Number and insert your custom workshop content here . . .
-
-    a.  Insert content here
-
-        i.  
-
-### Task 2: Task name
-
-1.  Number and insert your custom workshop content here . . .
-
-    a.  Insert content here
-
-        i.  
-You should follow all steps provided *after* attending the Hands-on lab.
-
+1.  In IoT Central, select *Administration* from the left-hand menu. In the *Application Settings* screen, delete the application by pressing the *Delete* button. This will automate the removal of the IoT Application as well as all of its resources.
+   
+![Delete the IoT Central application](../Media/delete-application.png)
