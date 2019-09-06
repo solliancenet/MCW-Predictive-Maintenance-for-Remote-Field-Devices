@@ -27,7 +27,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- TOC -->
 
-- [Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step](#predictive-maintenance-for-remote-field-devicesmhands-on-lab-step-by-step)
+- [Predictive Maintenance for Remote Field Devices hands-on lab step-by-step](#predictive-maintenance-for-remote-field-devices-hands-on-lab-step-by-step)
   - [Abstract and learning objectives](#abstract-and-learning-objectives)
   - [Overview](#overview)
   - [Solution architecture](#solution-architecture)
@@ -61,7 +61,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- /TOC -->
 
-# Predictive Maintenance for Remote Field Devicesmhands-on lab step-by-step 
+# Predictive Maintenance for Remote Field Devices hands-on lab step-by-step 
 
 ## Abstract and learning objectives 
 
@@ -565,12 +565,19 @@ The Event Hub we will be creating will act as a collector for data coming into I
 1. Log into the [Azure Portal](https://portal.azure.com)
 2. In the left-hand menu, select **Resource Groups**
 3. At the top of the screen press the **Add** button 
+   
    ![Add Resource Group Menu](../Media/add-resource-group-menu.png)
+
 4. Create a new resource group with the name **Fabrikam_Oil**, ensure the proper subscription and region nearest you are selected. Then click the **Review + Create** button.
+   
    ![Create Resource Group](../Media/create-resource-group.png)
-5. Open the newly created resource group. On the top of the screen, press the **Add** button, when the marketplace screen displays search for and select **Event Hubs**, this will allow you to create a new Event Hub Namespace resource.
+
+5. Open the newly created resource group. On the top of the screen, press the **Add** button, when the marketplace screen displays search for and select **Event Hubs**, this will allow you to create a new Event Hub Namespace resource. 
+   
    ![Search Event Hubs](../Media/search-event-hubs.png)
-6. Configure the event hub as follows, and press the **Create** button:
+
+6. Configure the event hub as follows, and press the **Create** button: 
+   
    | Field             | Value                                 |
    |-------------------|---------------------------------------|
    | Name              | *anything must be globally unique*    |
@@ -578,44 +585,63 @@ The Event Hub we will be creating will act as a collector for data coming into I
    | Subscription      | *select the appropriate subscription* |
    | Resource Group    | Fabrikam_Oil                          |
    | Location          | *select the location nearest to you*  |
+   
    ![Configure Event Hub Namespace](../Media/create-eventhub-namespace-form.png)
+
 7. Once the Event Hubs namespace has been created, open it and press the **+ Event Hub** button at the top of the screen.
+   
    ![Add new Event Hub](../Media/add-eventhub-menu.png)
-8. In the Create Event Hub form, configure the hub as follows and press the **Create** button:
+
+8. In the Create Event Hub form, configure the hub as follows and press the **Create** button: 
+   
    | Field             | Value                                 |
    |-------------------|---------------------------------------|
    | Name              | iot-central-feed                      |
    | Pricing Tier      | 1                                     |
    | Subscription      | 1                                     |
    | Capture           | Off                                   |
+
    ![Configure Event Hub](../Media/create-eventhub-form.png)
+
 9.  Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and clicking the hub from the list.
+   
     ![Event Hub Listing](../Media/event-hub-listing.png)
+
 10. From the top menu, press the **+ Consumer Group** button to create a new consumer group for the hub. Name the consumer group *ingressprocessing* and press the **Create** button.
+    
     ![Create Consumer Group](../Media/create-consumer-group-form.png)
 
 ### Task 2: Configure continuous data export from IoT Central
 
 1. Return to the IoT Central application, from the left-hand menu, select **Data Export**
+   
    ![Data Export Menu](../Media/data-export-menu.png)
+
 2. From the *Data Export* screen, press the **+ New** button from the upper right menu, and select **Azure Event Hubs**
+   
    ![New Event Hubs export](../Media/ce-eventhubs-menu.png)
-3. IoT Central will automatically retrieve Event Hubs namespaces and Event Hubs from the connected Azure Account. Configure the data export as follows and press the **Save** button:
-   | Field             | Value                                 |
-   |-------------------|---------------------------------------|
-   | Display Name      | Event Hub Feed                        |
-   | Enabled           | On                                    |
+
+3. IoT Central will automatically retrieve Event Hubs namespaces and Event Hubs from the connected Azure Account. Configure the data export as follows and press the **Save** button: 
+   
+   | Field                    | Value                                            |
+   |--------------------------|--------------------------------------------------|
+   | Display Name             | Event Hub Feed                                   |
+   | Enabled                  | On                                               |
    | Event Hubs Namespace     | *select the namespace you created in Exercise 6* |
-   | Event Hub    | iot-central-feed                          |
-   | Measurements          | On  |
-   | Devices | Off |
-   | Device Templates | Off |
+   | Event Hub                | iot-central-feed                                 |
+   | Measurements             | On                                               |
+   | Devices                  | Off                                              |
+   | Device Templates         | Off                                              |
+   
    ![Configure Data Export](../Media/create-data-export-form.png)
+
 4. The Event Hub Feed export will be created, and then started (it may take a few minutes for the export to start)
+   
    ![Event Hub Export Starting](../Media/ce-eventhubfeed-starting.png)
+   
    ![Event Hub Export Running](../Media/ce-eventhubfeed-running.png)
 
-   
+
 
    
 
