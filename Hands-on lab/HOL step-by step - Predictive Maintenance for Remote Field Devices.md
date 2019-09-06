@@ -9,7 +9,7 @@ Hands-on lab step-by-step
 </div>
 
 <div class="MCWHeader3">
-July 2019
+September 2019
 </div>
 
 
@@ -19,7 +19,7 @@ Microsoft may have patents, patent applications, trademarks, copyrights, or othe
 
 The names of manufacturers, products, or URLs are provided for informational purposes only and Microsoft makes no representations and warranties, either expressed, implied, or statutory, regarding these manufacturers or the use of the products with any Microsoft technologies. The inclusion of a manufacturer or product does not imply endorsement of Microsoft of the manufacturer or product. Links may be provided to third party sites. Such sites are not under the control of Microsoft and Microsoft is not responsible for the contents of any linked site or any link contained in a linked site, or any changes or updates to such sites. Microsoft is not responsible for webcasting or any other form of transmission received from any linked site. Microsoft is providing these links to you only as a convenience, and the inclusion of any link does not imply endorsement of Microsoft of the site or the products contained therein.
 
-© 2018 Microsoft Corporation. All rights reserved.
+© 2019 Microsoft Corporation. All rights reserved.
 
 Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/Usage/General.aspx> are trademarks of the Microsoft group of companies. All other trademarks are property of their respective owners.
 
@@ -53,8 +53,11 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 2: Add your company logo](#task-2-add-your-company-logo)
     - [Task 3: Add a list of Texas Rod Pumps](#task-3-add-a-list-of-texas-rod-pumps)
     - [Task 3: Add a map displaying the power state of DEVICE001](#task-3-add-a-map-displaying-the-power-state-of-device001)
+  - [Exercise 6: Create an Event Hub and continuously export data from IoT Central](#exercise-6-create-an-event-hub-and-continuously-export-data-from-iot-central)
+    - [Task 1: Create an Event Hub](#task-1-create-an-event-hub)
+    - [Task 2: Configure continuous data export from IoT Central](#task-2-configure-continuous-data-export-from-iot-central)
   - [After the hands-on lab](#after-the-hands-on-lab)
-    - [Task 1: Delete the IoT Central application](#task-1-delete-the-iot-central-application)
+    - [Task 1: Delete the IoT Central application and Resource Group](#task-1-delete-the-iot-central-application-and-resource-group)
 
 <!-- /TOC -->
 
@@ -552,12 +555,81 @@ It is beneficial to see the location and power state of certain critical Texas r
 
 ![Done dashboard editing](../Media/done-dashboard-editing.png)   
 
+## Exercise 6: Create an Event Hub and continuously export data from IoT Central
+
+IoT Central provides a great first stepping stone into a larger IoT solution. Earlier in this lab, we responded to a crossed threshold by initiating an email sent to Fabrikam field workers through Flow directly from IoT Central. While this approach certainly does add value, a more mature IoT solution typically involves a machine learning model that will process incoming telemetry to logically determine if a failure of a pump is immenent. The first step into this implementation is to create an Event Hub to act as a destination for IoT Centrals continuously exported data. 
+
+### Task 1: Create an Event Hub
+The Event Hub we will be creating will act as a collector for data coming into IoT Central. The receipt of a message into this hub will utimately serve as a trigger to send data into a machine learning model to determine if a pump is in a failing state. We will also create a Consumer Group on the event hub to serve as an input to an Azure Function that will be created later on in this lab.
+
+1. Log into the [Azure Portal](https://portal.azure.com)
+2. In the left-hand menu, select **Resource Groups**
+3. At the top of the screen press the **Add** button 
+   ![Add Resource Group Menu](../Media/add-resource-group-menu.png)
+4. Create a new resource group with the name **Fabrikam_Oil**, ensure the proper subscription and region nearest you are selected. Then click the **Review + Create** button.
+   ![Create Resource Group](../Media/create-resource-group.png)
+5. Open the newly created resource group. On the top of the screen, press the **Add** button, when the marketplace screen displays search for and select **Event Hubs**, this will allow you to create a new Event Hub Namespace resource.
+   ![Search Event Hubs](../Media/search-event-hubs.png)
+6. Configure the event hub as follows, and press the **Create** button:
+   | Field             | Value                                 |
+   |-------------------|---------------------------------------|
+   | Name              | *anything must be globally unique*    |
+   | Pricing Tier      | Standard                              |
+   | Subscription      | *select the appropriate subscription* |
+   | Resource Group    | Fabrikam_Oil                          |
+   | Location          | *select the location nearest to you*  |
+   ![Configure Event Hub Namespace](../Media/create-eventhub-namespace-form.png)
+7. Once the Event Hubs namespace has been created, open it and press the **+ Event Hub** button at the top of the screen.
+   ![Add new Event Hub](../Media/add-eventhub-menu.png)
+8. In the Create Event Hub form, configure the hub as follows and press the **Create** button:
+   | Field             | Value                                 |
+   |-------------------|---------------------------------------|
+   | Name              | iot-central-feed                      |
+   | Pricing Tier      | 1                                     |
+   | Subscription      | 1                                     |
+   | Capture           | Off                                   |
+   ![Configure Event Hub](../Media/create-eventhub-form.png)
+9.  Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and clicking the hub from the list.
+    ![Event Hub Listing](../Media/event-hub-listing.png)
+10. From the top menu, press the **+ Consumer Group** button to create a new consumer group for the hub. Name the consumer group *ingressprocessing* and press the **Create** button.
+    ![Create Consumer Group](../Media/create-consumer-group-form.png)
+
+### Task 2: Configure continuous data export from IoT Central
+
+1. Return to the IoT Central application, from the left-hand menu, select **Data Export**
+   ![Data Export Menu](../Media/data-export-menu.png)
+2. From the *Data Export* screen, press the **+ New** button from the upper right menu, and select **Azure Event Hubs**
+   ![New Event Hubs export](../Media/ce-eventhubs-menu.png)
+3. IoT Central will automatically retrieve Event Hubs namespaces and Event Hubs from the connected Azure Account. Configure the data export as follows and press the **Save** button:
+   | Field             | Value                                 |
+   |-------------------|---------------------------------------|
+   | Display Name      | Event Hub Feed                        |
+   | Enabled           | On                                    |
+   | Event Hubs Namespace     | *select the namespace you created in Exercise 6* |
+   | Event Hub    | iot-central-feed                          |
+   | Measurements          | On  |
+   | Devices | Off |
+   | Device Templates | Off |
+   ![Configure Data Export](../Media/create-data-export-form.png)
+4. The Event Hub Feed export will be created, and then started (it may take a few minutes for the export to start)
+   ![Event Hub Export Starting](../Media/ce-eventhubfeed-starting.png)
+   ![Event Hub Export Running](../Media/ce-eventhubfeed-running.png)
+
+   
+
+   
+
+
+
+
 ## After the hands-on lab 
 
 Duration: X minutes
 
-### Task 1: Delete the IoT Central application
+### Task 1: Delete the IoT Central application and Resource Group
 
 1.  In IoT Central, select *Administration* from the left-hand menu. In the *Application Settings* screen, delete the application by pressing the *Delete* button. This will automate the removal of the IoT Application as well as all of its resources.
-   
-![Delete the IoT Central application](../Media/delete-application.png)
+   ![Delete the IoT Central application](../Media/delete-application.png)
+
+2. In the [Azure Portal](https://portal.azure.com), select **Resource Groups**, open the resource group that you created in Exercise 6, and press the **Delete resource group** button.
+   ![Delete the Resource Group](../Media/delete-resource-group.png)
