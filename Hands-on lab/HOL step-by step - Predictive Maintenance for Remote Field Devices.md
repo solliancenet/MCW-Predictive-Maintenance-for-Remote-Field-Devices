@@ -56,6 +56,10 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
   - [Exercise 6: Create an Event Hub and continuously export data from IoT Central](#exercise-6-create-an-event-hub-and-continuously-export-data-from-iot-central)
     - [Task 1: Create an Event Hub](#task-1-create-an-event-hub)
     - [Task 2: Configure continuous data export from IoT Central](#task-2-configure-continuous-data-export-from-iot-central)
+  - [Exercise 7: Create an Azure Function to predict pump failure](#exercise-7-create-an-azure-function-to-predict-pump-failure)
+    - [Task 1: Create an Azure Function Application](#task-1-create-an-azure-function-application)
+    - [Task 2: Obtain connection settings for use with the Azure Function implementation](#task-2-obtain-connection-settings-for-use-with-the-azure-function-implementation)
+    - [Task 3: Create the local settings file for the Azure Functions project](#task-3-create-the-local-settings-file-for-the-azure-functions-project)
   - [After the hands-on lab](#after-the-hands-on-lab)
     - [Task 1: Delete the IoT Central application and Resource Group](#task-1-delete-the-iot-central-application-and-resource-group)
 
@@ -320,7 +324,7 @@ Make note of the connection string for the device.
 
 ### Task 2: Open the Visual Studio solution, and update connection string values
 
-1.  Using Visual Studio Code, open the /Hands-on lab/Resources/Fabrikam.FieldDevice.Generator folder.
+1.  Using Visual Studio Code, open the /Hands-on lab/Resources/FieldDeviceSimulator/Fabrikam.FieldDevice.Generator folder.
 
 2. Open *appsettings.json* and copy & paste the connection strings that you generated in Task 1 into this file.
 
@@ -640,13 +644,72 @@ The Event Hub we will be creating will act as a collector for data coming into I
    ![Event Hub Export Starting](../Media/ce-eventhubfeed-starting.png)
    
    ![Event Hub Export Running](../Media/ce-eventhubfeed-running.png)
+  
+## Exercise 7: Create an Azure Function to predict pump failure
 
+We will be using an Azure Function to read incoming telemetry from IoT Hub and send it to the HTTP endpoint of our predictive maintenance model. The function will receive a 0 or 1 from the model indicating whether or not a pump should be maintained to avoid possible failure. A notification will also be initiated through Flow to notify Field Workers of the maintenance required.
 
+### Task 1: Create an Azure Function Application
 
+1. Return to the [Azure Portal](https://portal.azure.com)
+2. From the left-hand menu, select the **Create a resource** item
+3. From the top menu, press the **+ Add** button, and search for Function App
+4. Configure the Function App as follows and press the **Create** button:
    
+   | Field                    | Value                                            |
+   |--------------------------|--------------------------------------------------|
+   | App Name                 | *your choice, must be globally unique*           |
+   | Subscription             | *select the appropriate subscription*            |
+   | ResourceGroup            | use existing, and select Fabrikam_Oil            |
+   | OS                       | Windows                                          |
+   | Hosting Plan             | Consumption                                      |
+   | Location                 | *select the location nearest to you*             |
+   | Runtime Stack            | .Net Core                                        |
+   | Storage                  | select Create new, and retain the default value  |
 
+   ![Create Azure Function App](../Media/create-azure-function-app-form.png)
 
+### Task 2: Obtain connection settings for use with the Azure Function implementation
+ 
+1. Once the Function App has been provisioned, open the **Fabrikam_Oil** resource group and click the link for the Storage Account that was created in the last task.
+   
+   ![Select Function Storage Account](../Media/select-function-storage-account.png)
 
+2. From the left-hand menu, select **Access Keys** and copy the key 1 Connection String, keep this value handy as we'll be needing it in the next task.
+   
+   ![Copy Function Storage Connection String](../Media/copy-function-storage-access-key.png)
+  
+3. Return to the **Fabrikam_Oil** resource group, and click the link for the Event Hubs Namespace
+   
+   ![Select the Event Hubs Namespace](../Media/select-event-hubs-namespace.png)
+   
+4. With the Event Hubs Namespace resource open, in the left-hand menu select the **Shared access policies** item located in Settings, then click on the **RootManageSharedAccessKey** policy.
+   
+   ![Open the Event Hub Namespace Shared Access Policies](../Media/open-event-hub-namespace-access-keys-menu.png)
+
+5. A blade will open where you will be able to copy the Primary Connection string, keep this value handy as we'll be needing it in the next task.
+   
+   ![Copy the Event Hub Namespace Connection String](../Media/copy-event-hub-namespace-access-key.png)
+
+### Task 3: Create the local settings file for the Azure Functions project
+
+It is recommended that you never check in secrets, such as connection strings, into source control. One way to do this is to use settings files. The values stored in these files mimic environment values used in production. The local settings file is never checked into source control.
+
+1. Using Visual Studio Code, open the  /Hands-on lab/Resources/FailurePredictionFunction folder.
+2. In this folder, create a new file named *local.settings.json* and populate it with the values obtained in the previous task as follows, then save the file:
+   
+   ```
+   {
+      "IsEncrypted": false,
+      "Values": {
+        "AzureWebJobsStorage": "<paste storage account connection string>",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "fabrikam-oil_RootManageSharedAccessKey_EVENTHUB": "<paste event hub namespace connection string>"
+      }
+   }
+   ```
+
+3. asdf
 
 ## After the hands-on lab 
 
@@ -655,6 +718,7 @@ Duration: X minutes
 ### Task 1: Delete the IoT Central application and Resource Group
 
 1.  In IoT Central, select *Administration* from the left-hand menu. In the *Application Settings* screen, delete the application by pressing the *Delete* button. This will automate the removal of the IoT Application as well as all of its resources.
+   
    ![Delete the IoT Central application](../Media/delete-application.png)
 
 2. In the [Azure Portal](https://portal.azure.com), select **Resource Groups**, open the resource group that you created in Exercise 6, and press the **Delete resource group** button.
