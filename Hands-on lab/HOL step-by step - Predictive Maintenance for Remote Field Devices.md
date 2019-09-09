@@ -38,7 +38,8 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 2: Create an IoT Central Application](#task-2-create-an-iot-central-application)
     - [Task 3: Create the Device Template](#task-3-create-the-device-template)
     - [Task 4: Create and provision real devices](#task-4-create-and-provision-real-devices)
-  - [Exercise 2: Running the Rod Pump Simulator](#exercise-2-running-the-rod-pump-simulator)
+  - [Task 5: Delete the simulated device](#task-5-delete-the-simulated-device)
+  - [Exercise 2: Run the Rod Pump Simulator](#exercise-2-run-the-rod-pump-simulator)
     - [Task 1: Generate device connection strings](#task-1-generate-device-connection-strings)
     - [Task 2: Open the Visual Studio solution, and update connection string values](#task-2-open-the-visual-studio-solution-and-update-connection-string-values)
     - [Task 3: Run the application](#task-3-run-the-application)
@@ -58,10 +59,15 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 2: Configure continuous data export from IoT Central](#task-2-configure-continuous-data-export-from-iot-central)
   - [Exercise 7: Create an Azure Function to predict pump failure](#exercise-7-create-an-azure-function-to-predict-pump-failure)
     - [Task 1: Create an Azure Function Application](#task-1-create-an-azure-function-application)
-    - [Task 2: Obtain connection settings for use with the Azure Function implementation](#task-2-obtain-connection-settings-for-use-with-the-azure-function-implementation)
-    - [Task 3: Create the local settings file for the Azure Functions project](#task-3-create-the-local-settings-file-for-the-azure-functions-project)
+    - [Task 2: Create a notification table in Azure Storage](#task-2-create-a-notification-table-in-azure-storage)
+    - [Task 3: Create a notification queue in Azure Storage](#task-3-create-a-notification-queue-in-azure-storage)
+    - [Task 4: Create notification service in Microsoft Flow](#task-4-create-notification-service-in-microsoft-flow)
+    - [Task 5: Obtain connection settings for use with the Azure Function implementation](#task-5-obtain-connection-settings-for-use-with-the-azure-function-implementation)
+    - [Task 6: Create the local settings file for the Azure Functions project](#task-6-create-the-local-settings-file-for-the-azure-functions-project)
+    - [Task 7: Review the Azure Function code](#task-7-review-the-azure-function-code)
+    - [Task 8: Run the Function App locally](#task-8-run-the-function-app-locally)
   - [After the hands-on lab](#after-the-hands-on-lab)
-    - [Task 1: Delete the IoT Central application and Resource Group](#task-1-delete-the-iot-central-application-and-resource-group)
+    - [Task 1: Delete Lab Resources](#task-1-delete-lab-resources)
 
 <!-- /TOC -->
 
@@ -290,8 +296,15 @@ Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Se
 
 ![Real Devices Registered](../Media/new-devices-registered.png)
 
+## Task 5: Delete the simulated device
+Now that we have registered real devices, we will no longer be needing the simulated pump that was created for us when we defined our template. 
+
+1. From the Devices list, check the checkbox next to the simulated pump, then press the **Delete** button.
+   
+   ![Delete Simulated Device](../Media/delete-simulated-device.png)
+
                 
-## Exercise 2: Running the Rod Pump Simulator
+## Exercise 2: Run the Rod Pump Simulator
 
 Duration: X minutes
 
@@ -669,7 +682,95 @@ We will be using an Azure Function to read incoming telemetry from IoT Hub and s
 
    ![Create Azure Function App](../Media/create-azure-function-app-form.png)
 
-### Task 2: Obtain connection settings for use with the Azure Function implementation
+### Task 2: Create a notification table in Azure Storage
+One of the things we would like to avoid is sending repeated notifications to the workforce in the field. Notifications should only be sent once every 24 hour period per device. To keep track of when a notification was last sent for a device, we will use a table in a Storage Account.
+
+1. In the [Azure Portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, then click on the **Fabrikam_Oil** link from the listing.
+2. Click on the link for the storage account that was created in Task 1.
+   
+   ![Select the Storage Account](../Media/select-function-storage-account.png)
+
+3. From the Storage Account left-hand menu, select **Tables** from the *Table service* section, then press the **+ Table** button, and create a new table named **DeviceNotifications**.
+   
+   ![Create Table in the Storage Account](../Media/create-storage-table-menu.png)
+
+4. Keep the Storage Account open in your browser for the next task.
+
+### Task 3: Create a notification queue in Azure Storage
+There are many ways to trigger flows in Microsoft Flow. One of them is having Flow monitor an Azure Queue. We will use a Queue in our Azure Storage Account to host this queue.
+
+1. From the Storage Account left-hand menu, select **Queues** located beneath the *Queue service* section, then press the **+ Queue** button, and create a new queue named **flownotificationqueue**
+   
+   ![Create Queue in the Storage Account](../Media/create-storage-queue-menu.png)
+
+2. Obtain the Shared Storage Key for the storage account by selecting **Access keys** located in the *Settings* section in the Azure Storage Account left-hand menu. Copy the *Key* value of *key1* and retain this value, we will be using it later in the next task. Also retain the name of your Storage Account (in the image below, the name of the Storage Account is *pumpfunctions8600*)
+   
+   ![Copy access key for the Storage Account](../Media/copy-function-storage-access-key.png)
+
+### Task 4: Create notification service in Microsoft Flow
+We will be using Microsoft Flow as a means to email the workforce in the field. This flow will respond to new messages placed on the queue that we created in Task 3.
+
+1. Access [Microsoft Flow](https://flow.microsoft.com) and sign in
+2. From the left-hand menu, select **+ Create**, then choose **Instant flow**
+   
+   ![Create Instant Flow](../Media/create-flow-menu.png)
+
+3. When the dialog displays, click the **Skip** link at the bottom to dismiss it
+   
+   ![Dismiss Dialog](../Media/instant-flow-skip-dialog.png)
+
+4. From the search bar, type *queue* to filter connectors and triggers. Then select the **When there are messages in a queue** item from the filtered list of Triggers.
+   
+   ![Select Queue Trigger](../Media/select-flow-trigger-type.png)
+
+5. Fill out the form as follows, then press the **Create** button:
+   
+   | Field                    | Value                                            |
+   |--------------------------|--------------------------------------------------|
+   | Connection Name          | Notification Queue                               |
+   | Storage Account Name     | *enter the generated storage account name*       |
+   | Shared Storage Key       | *paste the Key value recorded in Task 3*         |
+
+   ![Create Queue Step](../Media/create-flow-queue-step.png)
+
+6. In the queue step, select the **flownotificationqueue** item, then press the **+ New step** button
+   
+   ![Select Queue](../Media/create-flow-select-queue.png)
+
+7. In the search box for the next step, search for *email*, then select the **Send an email notification (V3)** item from the filtered list of Actions.
+   
+   ![Create email notification action](../Media/create-flow-email-step.png)
+
+8. You may need to accept the terms and conditions of the SendGrid service, a free service that provides the underlying email capabilities of this email step.
+9. In the Send an email notification (v3) form, fill it out as follows, then press the **+ New Step** button.
+    
+   | Field                    | Value                                                                                |
+   |--------------------------|--------------------------------------------------------------------------------------|
+   | To                       | *enter your email address*                                                           |
+   | Subject                  | Action Required: Pump needs maintenance                                              |
+   | Email Body               | *put cursor in the field, then click **Message Text** from the Dynamic Content menu* |
+
+   ![Email form](../Media/create-flow-email-form.png)
+
+10. In the search bar for the next step, search for *queue* once more, then select the **Delete message** item from the filtered list of Actions.
+    
+    ![Delete queue message step](../Media/create-flow-delete-message-step.png)
+
+11. In the Delete message form, fill it out as follows, then press the **Save** button.
+    
+   | Field                    | Value                                                                                |
+   |--------------------------|--------------------------------------------------------------------------------------|
+   | Queue Name               | flownotificationqueue                                                                |
+   | Message ID               | *put cursor in the field, then click **Message ID** from the Dynamic Content menu*   |
+   | Pop Receipt              | *put cursor in the field, then click **Pop Receipt** from the Dynamic Content menu*  |
+
+   ![Delete queue message form](../Media/create-flow-delete-message-form.png)
+   
+12. Microsoft will automatically name the Flow, you are able to edit this Flow in the future by selecting **My flows** from the left-hand menu
+    
+    ![New Flow created](../Media/new-flow-created.png)
+
+### Task 5: Obtain connection settings for use with the Azure Function implementation
  
 1. Once the Function App has been provisioned, open the **Fabrikam_Oil** resource group and click the link for the Storage Account that was created in the last task.
    
@@ -691,7 +792,7 @@ We will be using an Azure Function to read incoming telemetry from IoT Hub and s
    
    ![Copy the Event Hub Namespace Connection String](../Media/copy-event-hub-namespace-access-key.png)
 
-### Task 3: Create the local settings file for the Azure Functions project
+### Task 6: Create the local settings file for the Azure Functions project
 
 It is recommended that you never check in secrets, such as connection strings, into source control. One way to do this is to use settings files. The values stored in these files mimic environment values used in production. The local settings file is never checked into source control.
 
@@ -704,22 +805,52 @@ It is recommended that you never check in secrets, such as connection strings, i
       "Values": {
         "AzureWebJobsStorage": "<paste storage account connection string>",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-        "fabrikam-oil_RootManageSharedAccessKey_EVENTHUB": "<paste event hub namespace connection string>"
+        "fabrikam-oil_RootManageSharedAccessKey_EVENTHUB": "<paste event hub namespace connection string>",
+        "PredictionModelEndpoint": "<paste prediction model endpoint>"
       }
    }
    ```
 
-3. asdf
+### Task 7: Review the Azure Function code
+1. Observe the static *Run* function, it identifies that the function will run every time the *iot-central-feed* event hub receives a message. It also uses a specific Consumer Group, these are used when there is a possibility that more than one process may be utilizing the data received in the hub. This ensures that dependent processes receive all messages once - thus avoiding any contingency problems. The method receives an array (batch) of events from the hub on each execution, as well as an instance of a logger in case you wish to see values in the console (locally or in the cloud).
+   
+   ```
+   public static async Task Run([EventHubTrigger("iot-central-feed", Connection = "fabrikam-oil_RootManageSharedAccessKey_EVENTHUB", 
+                                ConsumerGroup = "ingressprocessing")] EventData[] events, ILogger log)
+   ```
+
+2.  On line 30, the message body received from the event is deserialized into a Telemetry object - the Telemetry class matches the telemetry sent by the pumps. The Telemetry class can be found in the Models/Telemetry.cs file.
+3.  On line 32, the device id is pulled from the system properties of the event. This will let us know from which device the telemetry data came from.
+4.  TODO UPDATE ONCE FINALIZED: Lines X through X sends the received telemetry to the Prediction Model endpoint. This service will respond with a 1 - meaning the pump requires maintenance, or a 0 meaning no maintenance notifications should be sent.
+5.  TODO UPDATE ONCE FINALIZED: Lines X through X checks Table storage to ensure a notification for the specific device hasn't been sent in the last 24 hours. If a notification is due to be sent, it will update the table storage record with the current timestamp and send a notification by queueing a message onto the *flownotificationqueue* queue.
+
+### Task 8: Run the Function App locally
+1. Press <kbd>Ctrl<kbd>+<kbd>F5<kbd> to run the Azure Function code.
+2. After some time, you should see log statements indicating that a message has been queued (indicating that Microsoft Flow will send a notification email)
+   
+   ![Azure Function Output](../Media/azure-function-output.png)
+
+3. Once a message has been placed on the *flownotificationqueue*, it will trigger the notification flow that we created and send an email to the field workers. These emails are sent in 5 minute intervals.
+   
+   ![Notification email received](../Media/flow-email-receipt.png)
 
 ## After the hands-on lab 
 
 Duration: X minutes
 
-### Task 1: Delete the IoT Central application and Resource Group
+### Task 1: Delete Lab Resources
 
-1.  In IoT Central, select *Administration* from the left-hand menu. In the *Application Settings* screen, delete the application by pressing the *Delete* button. This will automate the removal of the IoT Application as well as all of its resources.
+1. In IoT Central, select *Administration* from the left-hand menu. In the *Application Settings* screen, delete the application by pressing the *Delete* button. This will automate the removal of the IoT Application as well as all of its resources.
    
    ![Delete the IoT Central application](../Media/delete-application.png)
 
 2. In the [Azure Portal](https://portal.azure.com), select **Resource Groups**, open the resource group that you created in Exercise 6, and press the **Delete resource group** button.
+   
    ![Delete the Resource Group](../Media/delete-resource-group.png)
+
+3. Delete Microsoft Flows that we created. Access Microsoft Flow and login. From the left-hand menu, select **My flows**. Click on the ellipsis button next to each flow that we created in this lab and select **Delete**.
+   
+   ![Delete Microsoft Flow processes](../Media/delete-flow.png)
+
+   
+
