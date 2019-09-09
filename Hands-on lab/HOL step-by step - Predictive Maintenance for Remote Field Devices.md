@@ -825,7 +825,7 @@ It is recommended that you never check in secrets, such as connection strings, i
 5.  TODO UPDATE ONCE FINALIZED: Lines X through X checks Table storage to ensure a notification for the specific device hasn't been sent in the last 24 hours. If a notification is due to be sent, it will update the table storage record with the current timestamp and send a notification by queueing a message onto the *flownotificationqueue* queue.
 
 ### Task 8: Run the Function App locally
-1. Press <kbd>Ctrl<kbd>+<kbd>F5<kbd> to run the Azure Function code.
+1. Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to run the Azure Function code.
 2. After some time, you should see log statements indicating that a message has been queued (indicating that Microsoft Flow will send a notification email)
    
    ![Azure Function Output](../Media/azure-function-output.png)
