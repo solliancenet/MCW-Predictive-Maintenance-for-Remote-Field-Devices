@@ -262,7 +262,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Device Template Thumbnail](../Media/device-template-thumbnail.png)
 
-19. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Click the link for this simulated device, the charts will show a sampling of simulated data. 
+19. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select *Device Explorer*. In this list you will see a simulated device for the template that we have just created. Select the link for this simulated device, the charts will show a sampling of simulated data. 
 
 ![Device List - Simulated](../Media/iot-central-simulated-rod-pump.png)
 
@@ -278,7 +278,7 @@ Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Se
 
 2. Select the *Rod Pump (1.0.0)* template. This will now show the list of existing devices which at this time includes only the simulated device.
 
-3. Click the *+* button to add a new device, select *Real*.
+3. Press the *+* button to add a new device, select *Real*.
 
 ![Add a real device menu](../Media/add-real-device-menu.png)
 
@@ -312,7 +312,7 @@ Included with this lab is source code that will simulate the connection and tele
 
 ### Task 1: Generate device connection strings
 
-1. In IoT Central, select *Devices* from the left-hand menu. Then, from the devices list, click on *Rod Pump - DEVICE001*, and press the *Connect* button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
+1. In IoT Central, select *Devices* from the left-hand menu. Then, from the devices list, select the link for *Rod Pump - DEVICE001*, and press the *Connect* button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
 
 ![Device Connection Info](../Media/device-connection-info.png)
 
@@ -369,7 +369,7 @@ Make note of the connection string for the device.
 
 DEVICE001 is the rod pump that will gradually fail. Upon running the simulator for approximately 10 minutes (or 1100 messages), you can take a look at the Motor Power chart in the Device Dashboard, or on the measurements tab and watch the power consumption decrease.
 
-1. In IoT Central, select the *Devices* menu item, then click on *Rod Pump - DEVICE001* in the Devices list.
+1. In IoT Central, select the *Devices* menu item, then select the link for *Rod Pump - DEVICE001* in the Devices list.
 
 2. Ensure the *Measurements* tab is selected, then you can toggle off all telemetry values except for Motor Power so the chart will be focused solely on this telemetry property.
 
@@ -585,7 +585,7 @@ The Event Hub we will be creating will act as a collector for data coming into I
    
    ![Add Resource Group Menu](../Media/add-resource-group-menu.png)
 
-4. Create a new resource group with the name **Fabrikam_Oil**, ensure the proper subscription and region nearest you are selected. Then click the **Review + Create** button.
+4. Create a new resource group with the name **Fabrikam_Oil**, ensure the proper subscription and region nearest you are selected. Then press the **Review + Create** button.
    
    ![Create Resource Group](../Media/create-resource-group.png)
 
@@ -620,7 +620,7 @@ The Event Hub we will be creating will act as a collector for data coming into I
 
    ![Configure Event Hub](../Media/create-eventhub-form.png)
 
-9.  Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and clicking the hub from the list.
+9.  Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and selecting the hub from the list.
    
     ![Event Hub Listing](../Media/event-hub-listing.png)
 
@@ -685,8 +685,8 @@ We will be using an Azure Function to read incoming telemetry from IoT Hub and s
 ### Task 2: Create a notification table in Azure Storage
 One of the things we would like to avoid is sending repeated notifications to the workforce in the field. Notifications should only be sent once every 24 hour period per device. To keep track of when a notification was last sent for a device, we will use a table in a Storage Account.
 
-1. In the [Azure Portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, then click on the **Fabrikam_Oil** link from the listing.
-2. Click on the link for the storage account that was created in Task 1.
+1. In the [Azure Portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, then select the **Fabrikam_Oil** link from the listing.
+2. Select the link for the storage account that was created in Task 1.
    
    ![Select the Storage Account](../Media/select-function-storage-account.png)
 
@@ -715,7 +715,7 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
    
    ![Create Instant Flow](../Media/create-flow-menu.png)
 
-3. When the dialog displays, click the **Skip** link at the bottom to dismiss it
+3. When the dialog displays, select the **Skip** link at the bottom to dismiss it
    
    ![Dismiss Dialog](../Media/instant-flow-skip-dialog.png)
 
@@ -748,7 +748,7 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
    |--------------------------|--------------------------------------------------------------------------------------|
    | To                       | *enter your email address*                                                           |
    | Subject                  | Action Required: Pump needs maintenance                                              |
-   | Email Body               | *put cursor in the field, then click **Message Text** from the Dynamic Content menu* |
+   | Email Body               | *put cursor in the field, then press **Message Text** from the Dynamic Content menu* |
 
    ![Email form](../Media/create-flow-email-form.png)
 
@@ -761,8 +761,8 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
    | Field                    | Value                                                                                |
    |--------------------------|--------------------------------------------------------------------------------------|
    | Queue Name               | flownotificationqueue                                                                |
-   | Message ID               | *put cursor in the field, then click **Message ID** from the Dynamic Content menu*   |
-   | Pop Receipt              | *put cursor in the field, then click **Pop Receipt** from the Dynamic Content menu*  |
+   | Message ID               | *put cursor in the field, then press **Message ID** from the Dynamic Content menu*   |
+   | Pop Receipt              | *put cursor in the field, then press **Pop Receipt** from the Dynamic Content menu*  |
 
    ![Delete queue message form](../Media/create-flow-delete-message-form.png)
    
@@ -772,7 +772,7 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
 
 ### Task 5: Obtain connection settings for use with the Azure Function implementation
  
-1. Once the Function App has been provisioned, open the **Fabrikam_Oil** resource group and click the link for the Storage Account that was created in the last task.
+1. Once the Function App has been provisioned, open the **Fabrikam_Oil** resource group and select the link for the Storage Account that was created in the last task.
    
    ![Select Function Storage Account](../Media/select-function-storage-account.png)
 
@@ -780,11 +780,11 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
    
    ![Copy Function Storage Connection String](../Media/copy-function-storage-access-key.png)
   
-3. Return to the **Fabrikam_Oil** resource group, and click the link for the Event Hubs Namespace
+3. Return to the **Fabrikam_Oil** resource group, and select the link for the Event Hubs Namespace
    
    ![Select the Event Hubs Namespace](../Media/select-event-hubs-namespace.png)
    
-4. With the Event Hubs Namespace resource open, in the left-hand menu select the **Shared access policies** item located in Settings, then click on the **RootManageSharedAccessKey** policy.
+4. With the Event Hubs Namespace resource open, in the left-hand menu select the **Shared access policies** item located in Settings, then select the **RootManageSharedAccessKey** policy.
    
    ![Open the Event Hub Namespace Shared Access Policies](../Media/open-event-hub-namespace-access-keys-menu.png)
 
@@ -848,7 +848,7 @@ Duration: X minutes
    
    ![Delete the Resource Group](../Media/delete-resource-group.png)
 
-3. Delete Microsoft Flows that we created. Access Microsoft Flow and login. From the left-hand menu, select **My flows**. Click on the ellipsis button next to each flow that we created in this lab and select **Delete**.
+3. Delete Microsoft Flows that we created. Access Microsoft Flow and login. From the left-hand menu, select **My flows**. Press on the ellipsis button next to each flow that we created in this lab and select **Delete**.
    
    ![Delete Microsoft Flow processes](../Media/delete-flow.png)
 
