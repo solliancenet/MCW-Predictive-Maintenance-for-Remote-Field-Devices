@@ -71,11 +71,11 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
 
 <!-- /TOC -->
 
-# Predictive Maintenance for Remote Field Devices hands-on lab step-by-step 
+# Predictive Maintenance for Remote Field Devices hands-on lab step-by-step
 
-## Abstract and learning objectives 
+## Abstract and learning objectives
 
-In this hands-on-lab, you will build an end-to-end industrial IoT solution. We will begin by leveraging the Azure IoT Central SaaS offerings to quickly stand up a fully functional remote monitoring solution. Azure IoT Central provides solutions built upon recommendations found in the [Azure IoT Reference Architecture](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/iot/). We will customize this system specifically for rod pumps. Rod pumps are industrial equipment that is heavily used in the oil and gas industry.  We will then establish a model for the telemetry data that is received from the pump systems in the field and use this model to deploy simulated devices for system testing purposes. 
+In this hands-on-lab, you will build an end-to-end industrial IoT solution. We will begin by leveraging the Azure IoT Central SaaS offerings to quickly stand up a fully functional remote monitoring solution. Azure IoT Central provides solutions built upon recommendations found in the [Azure IoT Reference Architecture](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/iot/). We will customize this system specifically for rod pumps. Rod pumps are industrial equipment that is heavily used in the oil and gas industry. We will then establish a model for the telemetry data that is received from the pump systems in the field and use this model to deploy simulated devices for system testing purposes. 
 
 Furthermore we will establish threshold rules in the remote monitoring system that will monitor the incoming telemetry data to ensure all equipment is running optimally, and can alert us whenever the equipment is running outside of normal boundaries - indicating the need for alternative running parameters, maintenance, or a complete shut down of the pump. By leveraging the IoT Central solution, users can also issue commands to the pumps from a remote location in an instant to automate many operational and maintenance tasks which used to require staff on-site. This lessens operating costs associated with technician dispatch and equipment damage due to a failure.
 
@@ -91,7 +91,7 @@ The Predictive Maintenance for Remote Field Devices hands-on lab is an exercise 
 
 ## Requirements
 
-1.  Number and insert your custom workshop content here . . . 
+1. Number and insert your custom workshop content here . . . 
 
 ## Exercise 1: Configuring IoT Central with devices and metadata
 
@@ -125,29 +125,29 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ### Task 2: Create an IoT Central Application
 
-1.  Access the (Azure IoT Central)[https://azure.microsoft.com/en-us/services/iot-central/] website.
+1. Access the (Azure IoT Central)[https://azure.microsoft.com/en-us/services/iot-central/] website.
 
-2.  Press the *Get started* button 
+2. Press the *Get started* button 
 
     ![Getting started](../Media/azure-iot-central-website.png)
 
-3.   If you are not currently logged in, you will be prompted to log in with your Microsoft Azure Account
+3. If you are not currently logged in, you will be prompted to log in with your Microsoft Azure Account
 
-4.   Press the *New Application* button
+4. Press the *New Application* button
 
         ![New Application](../Media/azure-iot-central-new-application.png)
 
-5.   Fill the provisioning form
+5. Fill the provisioning form
         
         ![Provision application form](../Media/custom-app-creation-form.png)
 
         a. *Payment Plan* - feel free to choose either the 7 day trial or the Pay as you Go option.
 
-        b.  *Application Template* - select *Custom Application*
+        b. *Application Template* - select *Custom Application*
 
-        c.  *Application Name* - give your application a name of your choice, in this example, we used *fabrikam-oil*
+        c. *Application Name* - give your application a name of your choice, in this example, we used *fabrikam-oil*
 
-        d.  *Url* - this will be the URL for your application, it needs to be globally unique.
+        d. *Url* - this will be the URL for your application, it needs to be globally unique.
 
         e. Fill out your contact information (First Name, Last Name, Email Address, Phone Number, Country)
 
@@ -155,7 +155,7 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ### Task 3: Create the Device Template
 
-1.   Once the application has been provisioned, we need to define the type of equipment we are using, and the data associated with the equipment. In order to do this we must define a *Device Template*. Press either the *Create Device Templates* button, or the *Device Templates* menu item from the left-hand menu.
+1. Once the application has been provisioned, we need to define the type of equipment we are using, and the data associated with the equipment. In order to do this we must define a *Device Template*. Press either the *Create Device Templates* button, or the *Device Templates* menu item from the left-hand menu.
 
 ![Device Templates](../Media/create-device-templates.png)
 
@@ -163,19 +163,19 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ![Custom Template](../Media/new-template-custom.png)
 
-3.   For the device template name, enter *Rod Pump*, then press the *Create* button.
+3. For the device template name, enter *Rod Pump*, then press the *Create* button.
 
 ![Create Rod Pump Template](../Media/rod-pump-template-create.png)
 
-4.   The next thing we need to do is define the measurements that will be received from the device. To do this, press the *New* button at the top of the left-hand menu.
+4. The next thing we need to do is define the measurements that will be received from the device. To do this, press the *New* button at the top of the left-hand menu.
 
 ![New Measurement](../Media/new-measurement.png)
 
-5.  From the context menu, select *Telemetry*
+5. From the context menu, select *Telemetry*
 
 ![New Telemetry Measurement](../Media/new-telemetry-measurement.png)
 
-6.  Create Telemetry values as follows:
+6. Create Telemetry values as follows:
 
 ![Telemetry Data](../Media/telemetry-data.png)
 
@@ -212,11 +212,11 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 | IP Address    | IPAddress    | text      | The IP address of the rod pump    |
 | Pump Location | Location     | location  | The geo. location of the rod pump |
 
-11.  Operators and field workers will want to be able to turn on and off the pumps remotely. In order to do this we will define commands. Select the *Commands* tab, and press the *New* button to add a new command.
+11. Operators and field workers will want to be able to turn on and off the pumps remotely. In order to do this we will define commands. Select the *Commands* tab, and press the *New* button to add a new command.
 
 ![Add Command](../Media/device-template-add-command.png)
 
-12.  Create a command as follows, and press *save*:
+12. Create a command as follows, and press *save*:
         
         a. *Display Name* - *Toggle Motor Power*
         b. *Field Name* - *MotorPower*
@@ -337,7 +337,7 @@ Make note of the connection string for the device.
 
 ### Task 2: Open the Visual Studio solution, and update connection string values
 
-1.  Using Visual Studio Code, open the /Hands-on lab/Resources/FieldDeviceSimulator/Fabrikam.FieldDevice.Generator folder.
+1. Using Visual Studio Code, open the /Hands-on lab/Resources/FieldDeviceSimulator/Fabrikam.FieldDevice.Generator folder.
 
 2. Open *appsettings.json* and copy & paste the connection strings that you generated in Task 1 into this file.
 
@@ -345,7 +345,7 @@ Make note of the connection string for the device.
 
 3. Open *Program.cs*, go to line 141 and you will find the *SetupDeviceRunTasks* method. This method is responsible for creating the source code representations of the devices that we have defined earlier in the lab. Each of these devices is identified by its connection string. Note that DEVICE001 is defined as the pump that will gradually fail, DEVICE002 as a healthy pump, and DEVICE003 as a pump that will fail immediately after a specific amount of time. Line 164 also adds an event handler that gets fired every time the Power State for a pump changes. The power state of a pump gets changed via a cloud to device command - we will be visiting this concept later on in this lab.
 
-4. Open *Device.cs*, this class represents a device in the field. It encapsulates the properties (serial number and IP address) that are expected in the properties for the device in the cloud. It also maintains its own power state. Line 86 shows the *SendDevicePropertiesAndInitialState* method which updates the reported properties from the device to the cloud. This is also refered to as *Device Twins*.  Line 131 shows the *SendEvent* method that sends the generated telemetry data to the cloud.
+4. Open *Device.cs*, this class represents a device in the field. It encapsulates the properties (serial number and IP address) that are expected in the properties for the device in the cloud. It also maintains its own power state. Line 86 shows the *SendDevicePropertiesAndInitialState* method which updates the reported properties from the device to the cloud. This is also refered to as *Device Twins*. Line 131 shows the *SendEvent* method that sends the generated telemetry data to the cloud.
 
 ### Task 3: Run the application
 
@@ -478,7 +478,7 @@ Device sets allow you to create logical groupings of IoT Devices in the field by
 | Device Template     | Rod Pump (1.0.0)           |
 | Condition: Property | IP Address                 |
 | Condition: Operator | contains                   |
-| Condition: Value    | 192.168.1.                 |
+| Condition: Value    | 192.168.1.              |
 
 3. Note how the device list for this device set is automatically filtered to include only the real devices based on their IP Address. You are now able to act upon this group of devices as a single unit in IoT Central.
 
@@ -620,7 +620,7 @@ The Event Hub we will be creating will act as a collector for data coming into I
 
    ![Configure Event Hub](../Media/create-eventhub-form.png)
 
-9.  Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and selecting the hub from the list.
+9. Once the Event Hub has been created, open it by selecting *Event Hubs* in the left-hand menu, and selecting the hub from the list.
    
     ![Event Hub Listing](../Media/event-hub-listing.png)
 
@@ -819,10 +819,10 @@ It is recommended that you never check in secrets, such as connection strings, i
                                 ConsumerGroup = "ingressprocessing")] EventData[] events, ILogger log)
    ```
 
-2.  On line 30, the message body received from the event is deserialized into a Telemetry object - the Telemetry class matches the telemetry sent by the pumps. The Telemetry class can be found in the Models/Telemetry.cs file.
-3.  On line 32, the device id is pulled from the system properties of the event. This will let us know from which device the telemetry data came from.
-4.  TODO UPDATE ONCE FINALIZED: Lines X through X sends the received telemetry to the Prediction Model endpoint. This service will respond with a 1 - meaning the pump requires maintenance, or a 0 meaning no maintenance notifications should be sent.
-5.  TODO UPDATE ONCE FINALIZED: Lines X through X checks Table storage to ensure a notification for the specific device hasn't been sent in the last 24 hours. If a notification is due to be sent, it will update the table storage record with the current timestamp and send a notification by queueing a message onto the *flownotificationqueue* queue.
+2. On line 30, the message body received from the event is deserialized into a Telemetry object - the Telemetry class matches the telemetry sent by the pumps. The Telemetry class can be found in the Models/Telemetry.cs file.
+3. On line 32, the device id is pulled from the system properties of the event. This will let us know from which device the telemetry data came from.
+4. TODO UPDATE ONCE FINALIZED: Lines X through X sends the received telemetry to the Prediction Model endpoint. This service will respond with a 1 - meaning the pump requires maintenance, or a 0 meaning no maintenance notifications should be sent.
+5. TODO UPDATE ONCE FINALIZED: Lines X through X checks Table storage to ensure a notification for the specific device hasn't been sent in the last 24 hours. If a notification is due to be sent, it will update the table storage record with the current timestamp and send a notification by queueing a message onto the *flownotificationqueue* queue.
 
 ### Task 8: Run the Function App locally
 1. Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to run the Azure Function code.
