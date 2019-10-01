@@ -138,7 +138,7 @@ In this task, you will import the Databricks notebooks into your workspace.
 
    ![The URL has been entered in the import form.](media/databricks-import.png 'Import Notebooks')
 
-3. After importing, select your username. You will see a new folder named `01 IoT`, which contains two notebooks.
+3. After importing, select your username. You will see a new folder named `Anomaly Detection`, which contains two notebooks.
 
    ![The imported notebooks are displayed.](media/databricks-notebooks.png 'Imported notebooks')
 
