@@ -61,11 +61,11 @@ In this task, you will create an Azure resource group for the resources used thr
 
 3. At the top of the screen press the **Add** button.
 
-   ![Add Resource Group Menu](../Media/add-resource-group-menu.png)
+   ![Add Resource Group Menu](media/add-resource-group-menu.png)
 
 4. Create a new resource group with the name **Fabrikam_Oil**, ensure the proper subscription and region nearest you are selected. Then select **Review + Create**.
 
-   ![Create Resource Group](../Media/create-resource-group.png)
+   ![Create Resource Group](media/create-resource-group.png)
 
 5. On the Summary blade, select **Create** to provision your resource group.
 
@@ -95,8 +95,6 @@ Azure Databricks is used to train and deploy a machine learning model that predi
    ![The form fields are completed with the previously described settings.](media/azure-create-databricks.png 'Azure Databricks Service')
 
 5. Select **Create**.
-
-   ![User blade is shown with Object ID highlighted](media/deploy-azure-ad-user-object-id.png 'User blade is shown with Object ID highlighted')
 
 ### Task 3: Create Azure Databricks cluster
 
