@@ -33,6 +33,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 2: Create an Azure Databricks service](#task-2-create-an-azure-databricks-service)
     - [Task 3: Create Azure Databricks cluster](#task-3-create-azure-databricks-cluster)
     - [Task 4: Import lab notebooks into Azure Databricks](#task-4-import-lab-notebooks-into-azure-databricks)
+    - [Task 5: Create Azure Machine Learning service workspace](#task-5-create-azure-machine-learning-service-workspace)
 
 <!-- /TOC -->
 
@@ -76,7 +77,7 @@ Azure Databricks is used to train and deploy a machine learning model that predi
 
 2. Select **+ Create a resource**, type in "Databricks" in the search field, then select **Azure Databricks** from the results.
 
-   ![Create a resource is highlighted and SQL Database is selected.](media/azure-create-databricks-search.png 'SQL Database')
+   ![Create a resource is highlighted and Azure Databricks is selected.](media/azure-create-databricks-search.png 'SQL Database')
 
 3. Select **Create** in the Azure Databricks details page.
 
@@ -111,16 +112,6 @@ Azure Databricks is used to train and deploy a machine learning model that predi
 
 4. In the **New Cluster** form, specify the following configuration options:
 
-   1. **Cluster Name**: Enter **lab**.
-   2. **Cluster Mode**: Select **Standard**.
-   3. **Pool**: Select **None**.
-   4. **Databricks Runtime Version**: Select **Runtime 5.5 LTS (Scala 2.11, Spark 2.4.3)**.
-   5. **Python Version**: Enter **3**.
-   6. **Autopilot Options**: Uncheck **Enable autoscaling** and **Terminate after...**, with a value of **120** minutes.
-   7. **Worker Type**: Select **Standard_DS3_v2**.
-   8. **Driver Type**: Select **Same as worker**.
-   9. **Workers**: Enter **1**.
-
    | Field                      | Value                                                                                        |
    | -------------------------- | -------------------------------------------------------------------------------------------- |
    | Cluster name               | _enter `lab`_                                                                                |
@@ -152,5 +143,28 @@ In this task, you will import the Databricks notebooks into your workspace.
 3. After importing, select your username. You will see a new folder named `01 IoT`, which contains two notebooks.
 
    ![The imported notebooks are displayed.](media/databricks-notebooks.png 'Imported notebooks')
+
+### Task 5: Create Azure Machine Learning service workspace
+
+1. Navigate to the [Azure portal](https://portal.azure.com).
+
+2. Select **+ Create a resource**, type in "machine learning" in the search field, then select **Machine Learning service workspace** from the results.
+
+   ![Create a resource is highlighted and Machine Learning service workspace is selected.](media/azure-create-aml-search.png 'SQL Database')
+
+3. Select **Create** in the Azure Databricks details page.
+
+4. Within the **Azure Databricks Service** form, complete the following:
+
+   | Field          | Value                                      |
+   | -------------- | ------------------------------------------ |
+   | Workspace name | _globally unique name_                     |
+   | Subscription   | _select the appropriate subscription_      |
+   | Resource Group | _select use existing, then `Fabrikam_Oil`_ |
+   | Location       | _select the location nearest to you_       |
+
+   ![The form fields are completed with the previously described settings.](media/azure-create-aml.png 'Machine Learning service workspace')
+
+5. Select **Create**.
 
 You should follow all steps provided _before_ performing the Hands-on lab.
