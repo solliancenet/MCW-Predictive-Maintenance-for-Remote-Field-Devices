@@ -30,7 +30,9 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
   - [Requirements](#requirements)
   - [Before the hands-on lab](#before-the-hands-on-lab)
     - [Task 1: Provision a resource group](#task-1-provision-a-resource-group)
-    - [Task 2: Create an Azure Databricks workspace](#task-2-create-an-azure-databricks-workspace)
+    - [Task 2: Create an Azure Databricks service](#task-2-create-an-azure-databricks-service)
+    - [Task 3: Create Azure Databricks cluster](#task-3-create-azure-databricks-cluster)
+    - [Task 4: Import lab notebooks into Azure Databricks](#task-4-import-lab-notebooks-into-azure-databricks)
 
 <!-- /TOC -->
 
@@ -66,7 +68,7 @@ In this task, you will create an Azure resource group for the resources used thr
 
 5. On the Summary blade, select **Create** to provision your resource group.
 
-### Task 2: Create an Azure Databricks workspace
+### Task 2: Create an Azure Databricks service
 
 Azure Databricks is used to train and deploy a machine learning model that predicts an oil pump failure, based on incoming telemetry.
 
@@ -94,5 +96,61 @@ Azure Databricks is used to train and deploy a machine learning model that predi
 5. Select **Create**.
 
    ![User blade is shown with Object ID highlighted](media/deploy-azure-ad-user-object-id.png 'User blade is shown with Object ID highlighted')
+
+### Task 3: Create Azure Databricks cluster
+
+1. In the [Azure portal](https://portal.azure.com), open your Azure Databricks service you created in the previous task.
+
+2. Select **Launch Workspace**. Azure Databricks will automatically sign you in through its Azure Active Directory integration.
+
+   ![Launch Workspace](media/databricks-launch-workspace.png 'Launch Workspace')
+
+3. Once in the workspace, select **Clusters** in the left-hand menu, then select **+ Create Cluster**.
+
+   ![Create Cluster is highlighted.](media/databricks-clusters.png 'Clusters')
+
+4. In the **New Cluster** form, specify the following configuration options:
+
+   1. **Cluster Name**: Enter **lab**.
+   2. **Cluster Mode**: Select **Standard**.
+   3. **Pool**: Select **None**.
+   4. **Databricks Runtime Version**: Select **Runtime 5.5 LTS (Scala 2.11, Spark 2.4.3)**.
+   5. **Python Version**: Enter **3**.
+   6. **Autopilot Options**: Uncheck **Enable autoscaling** and **Terminate after...**, with a value of **120** minutes.
+   7. **Worker Type**: Select **Standard_DS3_v2**.
+   8. **Driver Type**: Select **Same as worker**.
+   9. **Workers**: Enter **1**.
+
+   | Field                      | Value                                                                                        |
+   | -------------------------- | -------------------------------------------------------------------------------------------- |
+   | Cluster name               | _enter `lab`_                                                                                |
+   | Cluster Mode               | _select `Standard`_                                                                          |
+   | Pool                       | _select `None`_                                                                              |
+   | Databricks Runtime Version | _select `Runtime 5.5 LTS (Scala 2.11, Spark 2.4.3)`_                                         |
+   | Python Version             | _enter `3`_                                                                                  |
+   | Autopilot Options          | _uncheck `Enable autoscaling` and check `Terminate after...`, with a value of `120` minutes_ |
+   | Worker Type                | _select `Standard_DS3_v2`_                                                                   |
+   | Driver Type                | _select `Same as worker`_                                                                    |
+   | Workers                    | _enter `1`_                                                                                  |
+
+   ![The New Cluster form is displayed with the previously described values.](media/databricks-new-cluster.png 'New Cluster')
+
+5. Select **Create Cluster**.
+
+### Task 4: Import lab notebooks into Azure Databricks
+
+In this task, you will import the Databricks notebooks into your workspace.
+
+1. Within your Azure Databricks service, select **Workspace**, select **Users**, select the dropdown to the right of your username, then select **Import**.
+
+   ![The Import link is highlighted in the Workspace.](media/databricks-import-link.png 'Workspace')
+
+2. Select **URL** next to **Import from**, paste the following into the text box: `https://github.com/solliancenet/MCW-Predictive-Maintenance-for-Remote-Field-Devices/blob/master/Hands-on%20lab/Resources/Notebooks/Anomaly-Detection.dbc`, then select **Import**.
+
+   ![The URL has been entered in the import form.](media/databricks-import.png 'Import Notebooks')
+
+3. After importing, select your username. You will see a new folder named `01 IoT`, which contains two notebooks.
+
+   ![The imported notebooks are displayed.](media/databricks-notebooks.png 'Imported notebooks')
 
 You should follow all steps provided _before_ performing the Hands-on lab.
