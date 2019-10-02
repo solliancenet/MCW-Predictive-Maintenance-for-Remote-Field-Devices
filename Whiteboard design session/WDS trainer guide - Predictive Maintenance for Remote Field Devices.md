@@ -25,32 +25,32 @@ Microsoft and the trademarks listed at https://www.microsoft.com/en-us/legal/int
 **Contents**
 
 <!-- TOC -->
-- [Trainer information](#Trainer-information)
-  - [Role of the trainer](#Role-of-the-trainer)
-  - [Whiteboard design session flow](#Whiteboard-design-session-flow)
-  - [Before the whiteboard design session: How to prepare](#Before-the-whiteboard-design-session-How-to-prepare)
-  - [During the whiteboard design session: Tips for an effective whiteboard design session](#During-the-whiteboard-design-session-Tips-for-an-effective-whiteboard-design-session)
-- [Predictive Maintenance for Remote Field Devices whiteboard design session student guide](#Predictive-Maintenance-for-Remote-Field-Devices-whiteboard-design-session-student-guide)
-  - [Abstract and learning objectives](#Abstract-and-learning-objectives)
-  - [Step 1: Review the customer case study](#Step-1-Review-the-customer-case-study)
-    - [Customer situation](#Customer-situation)
-      - [Telemetry data](#Telemetry-data)
-    - [Customer needs](#Customer-needs)
-    - [Customer objections](#Customer-objections)
-    - [Infographic for common scenarios](#Infographic-for-common-scenarios)
-  - [Step 2: Design a proof of concept solution](#Step-2-Design-a-proof-of-concept-solution)
-  - [Step 3: Present the solution](#Step-3-Present-the-solution)
-  - [Wrap-up](#Wrap-up)
-  - [Additional references](#Additional-references)
-- [Predictive Maintenance for Remote Field Devices whiteboard design session trainer guide](#Predictive-Maintenance-for-Remote-Field-Devices-whiteboard-design-session-trainer-guide)
-  - [Step 1: Review the customer case study](#Step-1-Review-the-customer-case-study-1)
-  - [Step 2: Design a proof of concept solution](#Step-2-Design-a-proof-of-concept-solution-1)
-  - [Step 3: Present the solution](#Step-3-Present-the-solution-1)
-  - [Wrap-up](#Wrap-up-1)
-  - [Preferred target audience](#Preferred-target-audience)
-  - [Preferred solution](#Preferred-solution)
-  - [Checklist of preferred objection handling](#Checklist-of-preferred-objection-handling)
-  - [Customer quote (to be read back to the attendees at the end)](#Customer-quote-to-be-read-back-to-the-attendees-at-the-end)
+- [Trainer information](#trainer-information)
+  - [Role of the trainer](#role-of-the-trainer)
+  - [Whiteboard design session flow](#whiteboard-design-session-flow)
+  - [Before the whiteboard design session: How to prepare](#before-the-whiteboard-design-session-how-to-prepare)
+  - [During the whiteboard design session: Tips for an effective whiteboard design session](#during-the-whiteboard-design-session-tips-for-an-effective-whiteboard-design-session)
+- [Predictive Maintenance for Remote Field Devices whiteboard design session student guide](#predictive-maintenance-for-remote-field-devices-whiteboard-design-session-student-guide)
+  - [Abstract and learning objectives](#abstract-and-learning-objectives)
+  - [Step 1: Review the customer case study](#step-1-review-the-customer-case-study)
+    - [Customer situation](#customer-situation)
+      - [Telemetry data](#telemetry-data)
+    - [Customer needs](#customer-needs)
+    - [Customer objections](#customer-objections)
+    - [Infographic for common scenarios](#infographic-for-common-scenarios)
+  - [Step 2: Design a proof of concept solution](#step-2-design-a-proof-of-concept-solution)
+  - [Step 3: Present the solution](#step-3-present-the-solution)
+  - [Wrap-up](#wrap-up)
+  - [Additional references](#additional-references)
+- [Predictive Maintenance for Remote Field Devices whiteboard design session trainer guide](#predictive-maintenance-for-remote-field-devices-whiteboard-design-session-trainer-guide)
+  - [Step 1: Review the customer case study](#step-1-review-the-customer-case-study-1)
+  - [Step 2: Design a proof of concept solution](#step-2-design-a-proof-of-concept-solution-1)
+  - [Step 3: Present the solution](#step-3-present-the-solution-1)
+  - [Wrap-up](#wrap-up-1)
+  - [Preferred target audience](#preferred-target-audience)
+  - [Preferred solution](#preferred-solution)
+  - [Checklist of preferred objection handling](#checklist-of-preferred-objection-handling)
+  - [Customer quote (to be read back to the attendees at the end)](#customer-quote-to-be-read-back-to-the-attendees-at-the-end)
 <!-- /TOC -->
 
 # Trainer information
@@ -425,9 +425,15 @@ _High-level architecture_
 
 1. Without getting into the details (the following sections will address the particular details), diagram your initial vision for using a SaaS-based IoT solution on Azure with device management, custom dashboards, user management, real-time telemetry capture, analysis, and export. If you can, include the underlying architecture of the SaaS solution by identifying its major components.
 
-    ![The architecture diagram illustrates the components of Azure IoT Central.](../Media/arch-diagram.png "High-level architecture")
+    ![The architecture diagram shows the components of the preferred solution.](../Media/preferred-solution.png "High-level architecture")
 
-    Azure IoT Central is at the core of the preferred solution. Because it is a SaaS-based solution, the Azure services it uses are hidden from view. This diagram shows its primary components that pertain to Fabrikam's use case. IoT field devices securely connect to IoT Central through its cloud gateway. The gateway uses Azure IoT Hub Device Provisioning Service (DPS) to streamline device management, and the underlying IoT Hub service facilitates bi-directional communication between the cloud and IoT devices. All device telemetry is stored in a time series data store, based on Azure Time Series Insights. The application data store persists the IoT Central application and its customizations. This application provides a user interface shell, through which Fabrikam's users manage devices and associated metadata, view dashboards and reports, and configure rules and actions to react to device telemetry that indicates possible rod pump failure. Pervasive throughout the end-to-end solution is security in transit and at rest for devices and the web-based management application. The continuous data export feature is used to enable hot and cold path workloads on real-time and batch device telemetry and metadata, using external services. Batch data is exported to Azure Blob storage in Apache Avro file format each minute, and real-time data is exported to either Azure Event Hubs or Azure Service Bus.
+    [Azure IoT Central](https://docs.microsoft.com/azure/iot-central/overview-iot-central) is at the core of the preferred solution. It is used for data ingest, device management, data storage, and reporting. IoT field devices securely connect to IoT Central through its cloud gateway. The continuous export component sends device telemetry data to [Azure Blob storage](https://docs.microsoft.com/azure/storage/blobs/storage-blobs-overview) for cold storage, and the same data to [Azure Event Hubs](https://docs.microsoft.com/azure/event-hubs/event-hubs-about) for real-time processing. Azure Databricks uses the data stored in cold storage to periodically re-train a Machine Learning (ML) model to detect oil pump failures. It is also used to deploy the trained model to a web service hosted by [Azure Kubernetes Service](https://docs.microsoft.com/azure/aks/) (AKS) or [Azure Container Instances](https://docs.microsoft.com/azure/container-instances/) (ACI), using [Azure Machine Learning service](https://docs.microsoft.com/azure/machine-learning/service/overview-what-is-azure-ml). An [Azure function](https://docs.microsoft.com/azure/azure-functions/functions-overview) is triggered by events flowing through Event Hubs. It sends the event data for each pump to the web service hosting the deployed model, then sends an alert through [Microsoft Flow](https://flow.microsoft.com/) if an alert has not been sent within a configurable period of time. The alert is sent in the form of an email, identifying the failing oil pump with a suggestion to service the device.
+    
+    _Azure IoT Central architecture_
+
+    ![The architecture diagram illustrates the components of Azure IoT Central.](../Media/arch-diagram.png "IoT Central architecture")
+
+    The diagram above shows the components of IoT Central's architecture that pertain to Fabrikam's use case. Because it is a SaaS-based solution, the Azure services IoT Central uses are hidden from view. IoT field devices securely connect to IoT Central through its cloud gateway. The gateway uses Azure IoT Hub Device Provisioning Service (DPS) to streamline device management, and the underlying IoT Hub service facilitates bi-directional communication between the cloud and IoT devices. All device telemetry is stored in a time series data store, based on Azure Time Series Insights. The application data store persists the IoT Central application and its customizations. This application provides a user interface shell, through which Fabrikam's users manage devices and associated metadata, view dashboards and reports, and configure rules and actions to react to device telemetry that indicates possible rod pump failure. Pervasive throughout the end-to-end solution is security in transit and at rest for devices and the web-based management application. The continuous data export feature is used to enable hot and cold path workloads on real-time and batch device telemetry and metadata, using external services. Batch data is exported to Azure Blob storage in Apache Avro file format each minute, and real-time data is exported to either Azure Event Hubs or Azure Service Bus.
 
     > **Note**: The preferred solution is only one of many possible, viable approaches.
 
