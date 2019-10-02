@@ -45,7 +45,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 3: Run the application](#task-3-run-the-application)
     - [Task 4: Interpret telemetry data](#task-4-interpret-telemetry-data)
     - [Task 5: Restart a failing pump remotely](#task-5-restart-a-failing-pump-remotely)
-  - [Exercise 3: Creating a notification action on a telemetry rule](#exercise-3-creating-a-notification-action-on-a-telemetry-rule)
+  - [Exercise 3: Use Azure Databricks and Azure Machine Learning service to train and deploy predictive model](#exercise-3-use-azure-databricks-and-azure-machine-learning-service-to-train-and-deploy-predictive-model)
     - [Task 1: Create a workflow using Microsoft Flow](#task-1-create-a-workflow-using-microsoft-flow)
   - [Exercise 4: Creating a device set](#exercise-4-creating-a-device-set)
     - [Task 1: Create a device set using a filter](#task-1-create-a-device-set-using-a-filter)
@@ -53,7 +53,7 @@ Microsoft and the trademarks listed at <https://www.microsoft.com/en-us/legal/in
     - [Task 1: Clearing out the default dashboard](#task-1-clearing-out-the-default-dashboard)
     - [Task 2: Add your company logo](#task-2-add-your-company-logo)
     - [Task 3: Add a list of Texas Rod Pumps](#task-3-add-a-list-of-texas-rod-pumps)
-    - [Task 3: Add a map displaying the power state of DEVICE001](#task-3-add-a-map-displaying-the-power-state-of-device001)
+    - [Task 4: Add a map displaying the power state of DEVICE001](#task-4-add-a-map-displaying-the-power-state-of-device001)
   - [Exercise 6: Create an Event Hub and continuously export data from IoT Central](#exercise-6-create-an-event-hub-and-continuously-export-data-from-iot-central)
     - [Task 1: Create an Event Hub](#task-1-create-an-event-hub)
     - [Task 2: Configure continuous data export from IoT Central](#task-2-configure-continuous-data-export-from-iot-central)
@@ -129,146 +129,131 @@ The telemetry being reported by the Fabrikam rod pumps are as follows, we will b
 
 ### Task 2: Create an IoT Central Application
 
-1.  Access the (Azure IoT Central)[https://azure.microsoft.com/en-us/services/iot-central/] website.
+1. Access the (Azure IoT Central)[https://azure.microsoft.com/en-us/services/iot-central/] website.
 
-2.  Press the _Get started_ button
+2. Press the _Get started_ button
 
     ![Getting started](media/azure-iot-central-website.png)
 
-3.  If you are not currently logged in, you will be prompted to log in with your Microsoft Azure Account
+3. If you are not currently logged in, you will be prompted to log in with your Microsoft Azure Account
 
-4.  Press the _New Application_ button
+4. Press the _New Application_ button
 
-        ![New Application](media/azure-iot-central-new-application.png)
+    ![New Application](media/azure-iot-central-new-application.png)
 
-5.  Fill the provisioning form
+5. Fill the provisioning form
 
     ![Provision application form](media/custom-app-creation-form.png)
 
-        a. *Payment Plan* - feel free to choose either the 7 day trial or the Pay as you Go option.
+    a. *Payment Plan* - feel free to choose either the 7 day trial or the Pay as you Go option.
 
-        b. *Application Template* - select *Custom Application*
+    b. *Application Template* - select *Custom Application*
 
-        c. *Application Name* - give your application a name of your choice, in this example, we used *fabrikam-oil*
+    c. *Application Name* - give your application a name of your choice, in this example, we used *fabrikam-oil*
 
-        d. *Url* - this will be the URL for your application, it needs to be globally unique.
+    d. *Url* - this will be the URL for your application, it needs to be globally unique.
 
-        e. Fill out your contact information (First Name, Last Name, Email Address, Phone Number, Country)
+    e. Fill out your contact information (First Name, Last Name, Email Address, Phone Number, Country)
 
-        f. Press the *Create* button to provision your application
+    f. Press the *Create* button to provision your application
 
 ### Task 3: Create the Device Template
 
 1. Once the application has been provisioned, we need to define the type of equipment we are using, and the data associated with the equipment. In order to do this we must define a _Device Template_. Press either the _Create Device Templates_ button, or the _Device Templates_ menu item from the left-hand menu.
 
-![Device Templates](media/create-device-templates.png)
+    ![Device Templates](media/create-device-templates.png)
 
 2. Select _Custom_ to define our own type of hardware
 
-![Custom Template](media/new-template-custom.png)
+    ![Custom Template](media/new-template-custom.png)
 
 3. For the device template name, enter _Rod Pump_, then press the _Create_ button.
 
-![Create Rod Pump Template](media/rod-pump-template-create.png)
+    ![Create Rod Pump Template](media/rod-pump-template-create.png)
 
 4. The next thing we need to do is define the measurements that will be received from the device. To do this, press the _New_ button at the top of the left-hand menu.
 
-![New Measurement](media/new-measurement.png)
+    ![New Measurement](media/new-measurement.png)
 
 5. From the context menu, select _Telemetry_
 
-![New Telemetry Measurement](media/new-telemetry-measurement.png)
+    ![New Telemetry Measurement](media/new-telemetry-measurement.png)
 
 6. Create Telemetry values as follows:
 
-![Telemetry Data](media/telemetry-data.png)
+    ![Telemetry Data](media/telemetry-data.png)
 
-| Display Name    | Field Name     | Units   | Min. Value | Max. Value | Decimal Places |
-| --------------- | -------------- | ------- | ---------- | ---------- | -------------- |
-| Pump Rate       | PumpRate       | SPM     | 0          | 100        | 1              |
-| Time Pump On    | TimePumpOn     | Minutes | 0          |            | 2              |
-| Motor Power     | MotorPowerKw   | kW      | 0          | 90         | 2              |
-| Motor Speed     | MotorSpeed     | RPM     | 0          | 300        | 0              |
-| Casing Friction | CasingFriction | PSI     | 0          | 1600       | 2              |
+    | Display Name    | Field Name     | Units   | Min. Value | Max. Value | Decimal Places |
+    | --------------- | -------------- | ------- | ---------- | ---------- | -------------- |
+    | Pump Rate       | PumpRate       | SPM     | 0          | 100        | 1              |
+    | Time Pump On    | TimePumpOn     | Minutes | 0          |            | 2              |
+    | Motor Power     | MotorPowerKw   | kW      | 0          | 90         | 2              |
+    | Motor Speed     | MotorSpeed     | RPM     | 0          | 300        | 0              |
+    | Casing Friction | CasingFriction | PSI     | 0          | 1600       | 2              |
 
-![Telemetry Defined](media/telemetry-defined.png)
+    ![Telemetry Defined](media/telemetry-defined.png)
 
 7. Remaining on the measurement tab - we also need to define the current state of the pump, whether it is running or not. Press _New_ and select _State_.
 
-![Add State](media/device-template-add-state.png)
+    ![Add State](media/device-template-add-state.png)
 
 8. Add the state with the display name of _Power State_, field name of _PowerState_ with the values _Unavailable_, _On_, and _Off_ - then press the _Save_ button.
 
-![Power State](media/power-state-definition.png)
+    ![Power State](media/power-state-definition.png)
 
 9. In the device template, Properties are read-only metadata associated with the equipment. For our template, we will expect a property for Serial Number, IP Address, and the geographic location of the pump. From the top menu, select _Properties_, then _Device Property_ from the left-hand menu.
 
-![Device Properties Menu](media/device-properties-menu.png)
+    ![Device Properties Menu](media/device-properties-menu.png)
 
 10. Define the device properties as follows:
 
-![Device Properties Form](media/device-properties-form.png)
+    ![Device Properties Form](media/device-properties-form.png)
 
-| Display Name  | Field Name   | Data Type | Description                       |
-| ------------- | ------------ | --------- | --------------------------------- |
-| Serial Number | SerialNumber | text      | The Serial Number of the rod pump |
-| IP Address    | IPAddress    | text      | The IP address of the rod pump    |
-| Pump Location | Location     | location  | The geo. location of the rod pump |
+    | Display Name  | Field Name   | Data Type | Description                       |
+    | ------------- | ------------ | --------- | --------------------------------- |
+    | Serial Number | SerialNumber | text      | The Serial Number of the rod pump |
+    | IP Address    | IPAddress    | text      | The IP address of the rod pump    |
+    | Pump Location | Location     | location  | The geo. location of the rod pump |
 
 11. Operators and field workers will want to be able to turn on and off the pumps remotely. In order to do this we will define commands. Select the _Commands_ tab, and press the _New_ button to add a new command.
 
-![Add Command](media/device-template-add-command.png)
+    ![Add Command](media/device-template-add-command.png)
 
 12. Create a command as follows, and press _save_:
+
     a. _Display Name_ - _Toggle Motor Power_
     b. _Field Name_ - _MotorPower_
     c. _Default Timeout_ - _30_
     d. _Data Type_ - _toggle_
     e. _Description_ - _Toggle the motor power of the pump on and off_
 
-![Configure Command](media/template-configure-command.png)
+    ![Configure Command](media/template-configure-command.png)
 
-13. Let's now define some Rules that will monitor the incoming telemetry data. Select the _Rules_ tab, press the _New_ button, and select _Telemetry_.
+13. Now, we can define the dashboard by pressing the _Dashboard_ option in the top menu, and selecting _Line Chart_ from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
 
-![New Telemetry Rule](media/rules-new-telemetry.png)
+    ![Line Chart](media/line-chart.png)
 
-14. Create Telemetry rules as follows (we will defer rule actions until later in the lab):
+    ![Line Chart Form](media/line-chart-form.png)
 
-![Telemetry Rule Form](media/define-new-rule.png)
+14. A map is also available for display on the dashboard. Remaining on the Dashboard tab, select _Map_.
 
-| Name                       | Measurement     | Aggregation | Agg. Time Window | Operator     | Threshold |
-| -------------------------- | --------------- | ----------- | ---------------- | ------------ | --------- |
-| Low Motor Power (kW)       | Motor Power     | Average     | 5 minutes        | is less than | 30        |
-| Low Motor Speed (RPM)      | Motor Speed     | Average     | 5 minutes        | is less than | 80        |
-| Low Casing Friction (PSI)  | Casing Friction | Average     | 5 minutes        | is less than | 830       |
-| Low Pump Rate (SPM)        | Pump Rate       | Average     | 5 minutes        | is less than | 25        |
-| Low Time Pump On (Minutes) | TimePumpOn      | Average     | 5 minutes        | is less than | 65        |
+    ![Dashboard Map](media/dashboard-map.png)
 
-15. Now, we can define the dashboard by pressing the _Dashboard_ option in the top menu, and selecting _Line Chart_ from the left-hand menu. Define a line chart for each of the telemetry fields (PumpRate, TimePumpOn, MotorPower, MotorSpeed, CasingFriction) - keeping all the default values:
+15. Fill out the values for the map settings as follows:
 
-![Line Chart](media/line-chart.png)
+    ![Dashboard Map Form](media/dashboard-map-settings.png)
 
-![Line Chart Form](media/line-chart-form.png)
+    ![Dashboard Charts Definition](media/dashboard-charts-definition.png)
 
-16. A map is also available for display on the dashboard. Remaining on the Dashboard tab, select _Map_.
+16. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
 
-![Dashboard Map](media/dashboard-map.png)
+    ![Device Template Thumbnail](media/device-template-thumbnail.png)
 
-17. Fill out the values for the map settings as follows:
+17. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select _Device Explorer_. In this list you will see a simulated device for the template that we have just created. Select the link for this simulated device, the charts will show a sampling of simulated data.
 
-![Dashboard Map Form](media/dashboard-map-settings.png)
+    ![Device List - Simulated](media/iot-central-simulated-rod-pump.png)
 
-![Dashboard Charts Definition](media/dashboard-charts-definition.png)
-
-18. Finally, we can add an image to represent the equipment. Press on the circle icon left of the template name, and select an image file. The image used in this lab can be found on [PixaBay](https://pixabay.com/photos/pumpjack-texas-oil-rig-pump-591934/).
-
-![Device Template Thumbnail](media/device-template-thumbnail.png)
-
-19. Review the application template by viewing its simulated device. IoT Central automatically creates a simulated device based on the template you've created. From the left-hand menu, select _Device Explorer_. In this list you will see a simulated device for the template that we have just created. Select the link for this simulated device, the charts will show a sampling of simulated data.
-
-![Device List - Simulated](media/iot-central-simulated-rod-pump.png)
-
-![Simulated Measurements](media/simulated-measurements.png)
+    ![Simulated Measurements](media/simulated-measurements.png)
 
 ### Task 4: Create and provision real devices
 
@@ -282,27 +267,27 @@ Under the hood, Azure IoT Central uses the [Azure IoT Hub Device Provisioning Se
 
 3. Press the _+_ button to add a new device, select _Real_.
 
-![Add a real device menu](media/add-real-device-menu.png)
+    ![Add a real device menu](media/add-real-device-menu.png)
 
 4. A modal window will be displayed with an automatically generated Device ID and Device Name. You are able to overwrite these values with anything that makes sense in your downstream systems. We will be creating three real devices in this lab. Create the following as real devices:
 
-![Real Device ID and Name](media/real-device-id.png)
+    ![Real Device ID and Name](media/real-device-id.png)
 
-| Device ID | Device Name          |
-| --------- | -------------------- |
-| DEVICE001 | Rod Pump - DEVICE001 |
-| DEVICE002 | Rod Pump - DEVICE002 |
-| DEVICE003 | Rod Pump - DEVICE003 |
+    | Device ID | Device Name          |
+    | --------- | -------------------- |
+    | DEVICE001 | Rod Pump - DEVICE001 |
+    | DEVICE002 | Rod Pump - DEVICE002 |
+    | DEVICE003 | Rod Pump - DEVICE003 |
 
 5. Return to the Devices list by selecting _Devices_ in the left-hand menu. Note how all three real devices have the provisioning status of _Registered_.
 
-![Real Devices Registered](media/new-devices-registered.png)
+    ![Real Devices Registered](media/new-devices-registered.png)
 
 ## Task 5: Delete the simulated device
 
 Now that we have registered real devices, we will no longer be needing the simulated pump that was created for us when we defined our template.
 
-1.  From the Devices list, check the checkbox next to the simulated pump, then press the **Delete** button.
+1. From the Devices list, check the checkbox next to the simulated pump, then press the **Delete** button.
 
     ![Delete Simulated Device](media/delete-simulated-device.png)
 
@@ -316,25 +301,25 @@ Included with this lab is source code that will simulate the connection and tele
 
 1. In IoT Central, select _Devices_ from the left-hand menu. Then, from the devices list, select the link for _Rod Pump - DEVICE001_, and press the _Connect_ button located in the upper right corner of the device's page. Make note of the Scope ID, Device ID, as well as the primary and secondary key values.
 
-![Device Connection Info](media/device-connection-info.png)
+    ![Device Connection Info](media/device-connection-info.png)
 
 2. Utilizing one of the keys from the values you recorded in #5 we will be generating a connection string to be used within the source code running on the device. We will generate the connection string using command line tooling. Ensure you have Node v.8+ installed, open a command prompt, and execute the following to globally install the key generator utility:
 
-```
-npm i -g dps-keygen
-```
+    ```
+    npm i -g dps-keygen
+    ```
 
-![Global install of key generator utility](media/global-install-keyutil.png)
+    ![Global install of key generator utility](media/global-install-keyutil.png)
 
-Next, generate the connection string using the key generator utility
+    Next, generate the connection string using the key generator utility
 
-```
-dps-keygen -di:<Device ID> -dk:<Primary Key> -si:<Scope ID>
-```
+    ```
+    dps-keygen -di:<Device ID> -dk:<Primary Key> -si:<Scope ID>
+    ```
 
-![Generated Device Key](media/generated-device-connectionstring.png)
+    ![Generated Device Key](media/generated-device-connectionstring.png)
 
-Make note of the connection string for the device.
+    Make note of the connection string for the device.
 
 3. Repeat steps 1 and 2 for DEVICE002 and DEVICE003
 
@@ -344,7 +329,7 @@ Make note of the connection string for the device.
 
 2. Open _appsettings.json_ and copy & paste the connection strings that you generated in Task 1 into this file.
 
-![Updated appsettings.json](media/appsettings-updated.png)
+    ![Updated appsettings.json](media/appsettings-updated.png)
 
 3. Open _Program.cs_, go to line 141 and you will find the _SetupDeviceRunTasks_ method. This method is responsible for creating the source code representations of the devices that we have defined earlier in the lab. Each of these devices is identified by its connection string. Note that DEVICE001 is defined as the pump that will gradually fail, DEVICE002 as a healthy pump, and DEVICE003 as a pump that will fail immediately after a specific amount of time. Line 164 also adds an event handler that gets fired every time the Power State for a pump changes. The power state of a pump gets changed via a cloud to device command - we will be visiting this concept later on in this lab.
 
@@ -356,17 +341,17 @@ Make note of the connection string for the device.
 
 2. Once the menu is displayed, select option 1 to generate and send telemetry to IoT Central
 
-![Choose to generate and send telemetry to IoT Central](media/generate-and-send-telemetry.png)
+    ![Choose to generate and send telemetry to IoT Central](media/generate-and-send-telemetry.png)
 
 3. Allow the simulator to start sending telemetry data to IoT Central, you will see output similar to the following:
 
-![Sample Telemetry](media/telemetry-data-generated.png)
+    ![Sample Telemetry](media/telemetry-data-generated.png)
 
 4. Allow the simulator to run while continuing with this lab.
 
 5. After some time has passed, in IoT Central press the _Devices_ item in the left-hand menu. Note that the provisioning status of DEVICE001, DEVICE002, and DEVICE003 now indicate _Provisioned_.
 
-![Provisioned Devices](media/provisioned-devices.png)
+    ![Provisioned Devices](media/provisioned-devices.png)
 
 ### Task 4: Interpret telemetry data
 
@@ -376,21 +361,21 @@ DEVICE001 is the rod pump that will gradually fail. Upon running the simulator f
 
 2. Ensure the _Measurements_ tab is selected, then you can toggle off all telemetry values except for Motor Power so the chart will be focused solely on this telemetry property.
 
-![Focus Telemetry Chart to Motor Power](media/device001-focus-telemetry-chart.png)
+    ![Focus Telemetry Chart to Motor Power](media/device001-focus-telemetry-chart.png)
 
 3. Observe how the Motor Power usage of DEVICE001 gradually degrades.
 
-![Motor Power usage degredation](media/device001-gradual-failure-power.png)
+    ![Motor Power usage degredation](media/device001-gradual-failure-power.png)
 
 4. Press the _Rules_ tab, and select the alert for _Low Motor Power (kW)_, be sure to set the _Time Range_ to the _Last Hour_ for a higher level look at the telemetry values received. Notice how when the pump is operating normally, it is over the 30 kW line shown by the horizontal dotted line on the chart. Once the pump starts failing, you see the gradual decrease of pump power usage as it ventures below the 30 kW threshold.
 
-![DEVICE001 Motor Power Rules Chart](media/device001-rules-chart.png)
+    ![DEVICE001 Motor Power Rules Chart](media/device001-rules-chart.png)
 
 5. Repeat 1-4 and observe that DEVICE002, the non-failing pump, remains above the 30 kW threshold. DEVICE003 is also a failing pump, but displays an immediate failure versus a gradual one.
 
-![DEVICE002 Motor Power Rules Chart](media/device002-normal-operation.png)
+    ![DEVICE002 Motor Power Rules Chart](media/device002-normal-operation.png)
 
-![DEVICE003 Immediate Failure](media/device003-immediate-failure.png)
+    ![DEVICE003 Immediate Failure](media/device003-immediate-failure.png)
 
 ### Task 5: Restart a failing pump remotely
 
@@ -398,67 +383,37 @@ After observing the failure of two of the rod pumps, you are able cycle the powe
 
 1. In IoT Central, select _Devices_ from the left-hand menu, then press _Rod Pump - DEVICE001_ from the device list. Observe that even though the pump has in all purposes failed, that there is still power to the motor - indicated by the Power State bar at the bottom of the device's Measurements chart.
 
-![DEVICE001 Power State in Failure](media/device001-powerstate-in-failure.png)
+    ![DEVICE001 Power State in Failure](media/device001-powerstate-in-failure.png)
 
 2. In order to recover DEVICE001, select the _Commands_ tab. You will see the _Toggle Motor Power_ command. Press the _Run_ button on the command to turn the pump motor off.
 
-![DEVICE001 Run Toggle Motor Power Command](media/device001-run-toggle-command.png)
+    ![DEVICE001 Run Toggle Motor Power Command](media/device001-run-toggle-command.png)
 
 3. The simulator will also indicate that the command has been received from the cloud. Note in the output of the simulator, that DEVICE001 is no longer sending telemetry due to the pump motor being off.
 
-![Simulator showing DEVICE001 received the cloud message](media/device001-simulator-power-off.png)
+    ![Simulator showing DEVICE001 received the cloud message](media/device001-simulator-power-off.png)
 
 4. After a few moments, return to the _Measurements_ tab of _DEVICE001_ in IoT Central. Note the receipt of telemetry has stopped, and the state indicates the motor power state is off.
 
-![DEVICE001 Power State Off with no telemetry coming in](media/device001-stopped-telemetry-power-state-off.png)
+    ![DEVICE001 Power State Off with no telemetry coming in](media/device001-stopped-telemetry-power-state-off.png)
 
 5. Return to the _Commands_ tab, and toggle the motor power back on again by pressing the _Run_ button once more. On the measurements tab, you will see the Power State switch back to online, and telemetry to start flowing again. Due to the restart of the rod pump - it has now recovered and telemetry is back into normal ranges!
 
-![DEVICE001 recovered after Pump Power State has been cycled](media/device001-recovered-1.png)
+    ![DEVICE001 recovered after Pump Power State has been cycled](media/device001-recovered-1.png)
 
-![Another instance of pump recovery](media/device001-recovery-2.png)
+    ![Another instance of pump recovery](media/device001-recovery-2.png)
 
-## Exercise 3: Creating a notification action on a telemetry rule
+## Exercise 3: Use Azure Databricks and Azure Machine Learning service to train and deploy predictive model
 
 Duration: X minutes
 
 Earlier in the lab, we created Rules in the Rod Pump device template so that we could easily visualize failures when telemetry measurements are received beneath a specific threshold. Fabrikam does not want to manually monitor these rules charts on every device in order to identify failures or impending failures. Instead, they wish to have their field workforce notified that there may be a problem with a specific rod pump. These notifications should take the form of an email. We will implement this notification workflow by adding an _Action_ to a rule.
 
-![DEVICE001 rules threshold](media/device001-rule-threshold.png)
+    ![DEVICE001 rules threshold](media/device001-rule-threshold.png)
 
 ### Task 1: Create a workflow using Microsoft Flow
 
-[Microsoft Flow](https://flow.microsoft.com) is a handy tool that can be used in a vast array of scenarios. We will be taking advantage of the built-in capabilities of Flow to create and send an email when the Motor Power (kW) reads below 30 kW.
 
-1. Access the [Microsoft Flow website](https://flow.microsoft.com) and sign in (create an account if you don't already have one).
-
-2. From the left-hand menu - select the _My Flows_ item - then press the _New_ button and select _Create from template_ to begin defining our workflow.
-
-![Create new Flow](media/flow-create-from-template.png)
-
-3. A search form will be displayed, enter the search term _IoT Central_ and press the _Enter_ key. When the search results have been displayed - select the _Send an email to your team when an IoT Central rule is triggered_ template.
-
-![IoT Central Flow Templates](media/flow-iot-central-templates.png)
-
-4. Next, you will need to provide Flow with the necessary permissions to integrate with the email platform, as well as with IoT Central. If you receive any error messages while trying to authenticate to IoT Central, please view the _Troubleshooting_ section at the bottom of [this web page](https://docs.microsoft.com/en-us/azure/iot-central/howto-add-microsoft-flow).
-
-![Grant Flow Permission](media/flow-permissions.png)
-
-5. Define your workflow by selecting the appropriate IoT Central application, and the rule that you would like to trigger for the notification. In this case, select the _Low Motor Power (kW)_ rule. Then enter one or more email addresses to send the notification to (semi-colon delimited). Finally, author the email subject and body using the dynamic content helper popup. When complete, press the _Save_ button.
-
-![Flow definition](media/flow-workflow-definition.png)
-
-6. Once saved, you can see the workflow you've just defined by selecting the _My Flows_ menu item.
-
-![Flow workflow created](media/flow-workflow-created.png)
-
-7. Return to IoT Central, select _Device Templates_ from the left-hand menu and select the _Rod Pump_ template. Press the _Rules_ Tab and from the Rules list, select _Low Motor Power (kW)_, observe that an action has now been added to the rule.
-
-![New rule action](media/new-rule-action.png)
-
-8. Once the 5 minute average device telemetry falls below the 30 kW threshold, an email notification is sent.
-
-![Flow Email Notification](media/flow-email-notification.png)
 
 ## Exercise 4: Creating a device set
 
@@ -468,48 +423,48 @@ Device sets allow you to create logical groupings of IoT Devices in the field by
 
 1. In the left-hand menu, select the _Device sets_ menu item. You will see a single default device set in the list.Press the _+ New_ button in the upper right-hand side of the listing.
 
-![Device set listing](media/device-set-list.png)
+    ![Device set listing](media/device-set-list.png)
 
 2. In the field, all Texas pumps are located in the 192.168.1.\* subnet, so we will create a filter to include only those pumps in this device set. Create the Device set with a condition as follows:
 
-![New device set](media/new-device-set.png)
+    ![New device set](media/new-device-set.png)
 
-| Field               | Value                      |
-| ------------------- | -------------------------- |
-| Device Set Name     | Texas Rod Pumps            |
-| Description         | Rod pumps located in Texas |
-| Device Template     | Rod Pump (1.0.0)           |
-| Condition: Property | IP Address                 |
-| Condition: Operator | contains                   |
-| Condition: Value    | 192.168.1.                 |
+    | Field               | Value                      |
+    | ------------------- | -------------------------- |
+    | Device Set Name     | Texas Rod Pumps            |
+    | Description         | Rod pumps located in Texas |
+    | Device Template     | Rod Pump (1.0.0)           |
+    | Condition: Property | IP Address                 |
+    | Condition: Operator | contains                   |
+    | Condition: Value    | 192.168.1.                 |
 
 3. Note how the device list for this device set is automatically filtered to include only the real devices based on their IP Address. You are now able to act upon this group of devices as a single unit in IoT Central.
 
-![Texas Rod Pumps](media/texas-rod-pump-devices.png)
+    ![Texas Rod Pumps](media/texas-rod-pump-devices.png)
 
 4. Similar to devices, you are also able to create a dashboard specific to this Device Set. Press the _Dashboard_ tab from the top menu, then press the _Edit_ button on the right-hand side of the screen.
 
-![Device Set Dashboard Edit](media/device-set-dashboard-edit.png)
+    ![Device Set Dashboard Edit](media/device-set-dashboard-edit.png)
 
 5. In this case, we will add a map that will show the location and current power state of each rod pump in the device set. From the _Library_ menu, select _Map_
 
-![Device set dashboard add map](media/device-set-add-map.png)
+    ![Device set dashboard add map](media/device-set-add-map.png)
 
 6. Configure the map as follows, and press _Save_:
 
-| Field             | Value                       |
-| ----------------- | --------------------------- |
-| Device Template   | Rod Pump (1.0.0)            |
-| Device Instance   | Rod Pump - DEVICE001        |
-| Title             | Rod Pump - DEVICE001 Status |
-| Location          | Rod Pump Location           |
-| State Measurement | Power State                 |
+    | Field             | Value                       |
+    | ----------------- | --------------------------- |
+    | Device Template   | Rod Pump (1.0.0)            |
+    | Device Instance   | Rod Pump - DEVICE001        |
+    | Title             | Rod Pump - DEVICE001 Status |
+    | Location          | Rod Pump Location           |
+    | State Measurement | Power State                 |
 
-![Device set configure map](media/device-set-configure-map.png)
+    ![Device set configure map](media/device-set-configure-map.png)
 
 7. End Dashboard editing by pressing the _Done_ button on upper-right corner of the dashboard editor.
 
-![Device set dashboard complete editing](media/device-set-dashboard-done.png)
+    ![Device set dashboard complete editing](media/device-set-dashboard-done.png)
 
 8. Observe how the device set now has a map displaying markers for each device in the set. Feel free to adjust to zoom to better infer their location.
 
@@ -521,60 +476,63 @@ One of the main features of IoT Central is the ability to visualize the health o
 
 1. In the left-hand menu, press the _Dashboard_ item. Then, in the upper right corner of the dashboard - press the _Edit_ button.
 
-![Edit dashboard](media/dashboard-edit-button.png)
+    ![Edit dashboard](media/dashboard-edit-button.png)
 
 2. Press the _X_ on each tile that you do not wish to see on the dashboard to remove them. The _X_ will display when you hover over the tile.
 
-![Delete dashboard tile](media/delete-dashboard-card.png)
+    ![Delete dashboard tile](media/delete-dashboard-card.png)
 
 ### Task 2: Add your company logo
 
 1. Remaining in the edit mode of the dashboard, select _Image_ from the _Library_ menu.
 
-![Dashboard library Image](media/dashboard-library-image.png)
+    ![Dashboard library Image](media/dashboard-library-image.png)
 
 2. Configure the logo with the following file _/Media/fabrikam-logo.png_.
 
-![Configure logo image](media/configure-dashboard-logo.png)
+    ![Configure logo image](media/configure-dashboard-logo.png)
 
 3. Resize the logo on the dashboard using the handle on the lower right of the logo tile.
 
-![Resize the logo](media/logo-resize.png)
+    ![Resize the logo](media/logo-resize.png)
 
 ### Task 3: Add a list of Texas Rod Pumps
 
 In the previous exercise, we created a device set that contains the devices located in Texas. We will leverage this device set to display this filtered information.
 
 1. Remaining in the edit dashboard mode, select _Device Set Grid_ from the _Library_ menu.
+
 2. Configure the device list by selecting the _Texas Rod Pumps_ Device Set, and assigning it the title of _Texas Rod Pumps_.
+
 3. Add columns by pressing the _Add/Remove_, we will add _Device ID_ and _IP Address_.
+
 4. Press the _Save_ button to add the tile to the dashboard.
 
-![Configure list](media/device-list-configure1.png)
+    ![Configure list](media/device-list-configure1.png)
 
-![Dashboard in progress](media/dashboard-inprogress-1.png)
+    ![Dashboard in progress](media/dashboard-inprogress-1.png)
 
-### Task 3: Add a map displaying the power state of DEVICE001
+### Task 4: Add a map displaying the power state of DEVICE001
 
 It is beneficial to see the location and power state of certain critical Texas rod pumps. We will add a map that will display the location and current power state of DEVICE001.
 
 1. Select _Map_ from the _Library_ menu, configure the map as follows, and press _Save_:
 
-| Field             | Value                       |
-| ----------------- | --------------------------- |
-| Device Template   | Rod Pump (1.0.0)            |
-| Device Instance   | Rod Pump - DEVICE001        |
-| Title             | Rod Pump - DEVICE001 Status |
-| Location          | Rod Pump Location           |
-| State Measurement | Power State                 |
+    | Field             | Value                       |
+    | ----------------- | --------------------------- |
+    | Device Template   | Rod Pump (1.0.0)            |
+    | Device Instance   | Rod Pump - DEVICE001        |
+    | Title             | Rod Pump - DEVICE001 Status |
+    | Location          | Rod Pump Location           |
+    | State Measurement | Power State                 |
 
-![Configure Map](media/dashboard-configure-map.png)
+    ![Configure Map](media/dashboard-configure-map.png)
 
-![Completed Dashboard](media/completed-dashboard.png)
+    ![Completed Dashboard](media/completed-dashboard.png)
 
 2. Press the _Done_ button in the upper right corner of the Dashboard to finish editing.
 
-![Done dashboard editing](media/done-dashboard-editing.png)
+    ![Done dashboard editing](media/done-dashboard-editing.png)
 
 ## Exercise 6: Create an Event Hub and continuously export data from IoT Central
 
@@ -665,9 +623,12 @@ We will be using an Azure Function to read incoming telemetry from IoT Hub and s
 
 ### Task 1: Create an Azure Function Application
 
-1. Return to the [Azure Portal](https://portal.azure.com)
-2. From the left-hand menu, select the **Create a resource** item
-3. From the top menu, press the **+ Add** button, and search for Function App
+1. Return to the [Azure Portal](https://portal.azure.com).
+
+2. From the left-hand menu, select the **Create a resource** item.
+
+3. From the top menu, press the **+ Add** button, and search for Function App.
+
 4. Configure the Function App as follows and press the **Create** button:
 
    | Field         | Value                                           |
@@ -688,6 +649,7 @@ We will be using an Azure Function to read incoming telemetry from IoT Hub and s
 One of the things we would like to avoid is sending repeated notifications to the workforce in the field. Notifications should only be sent once every 24 hour period per device. To keep track of when a notification was last sent for a device, we will use a table in a Storage Account.
 
 1. In the [Azure Portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, then select the **Fabrikam_Oil** link from the listing.
+
 2. Select the link for the storage account that was created in Task 1.
 
    ![Select the Storage Account](media/select-function-storage-account.png)
@@ -712,9 +674,10 @@ There are many ways to trigger flows in Microsoft Flow. One of them is having Fl
 
 ### Task 4: Create notification service in Microsoft Flow
 
-We will be using Microsoft Flow as a means to email the workforce in the field. This flow will respond to new messages placed on the queue that we created in Task 3.
+We will be using [Microsoft Flow](https://flow.microsoft.com/) as a means to email the workforce in the field. This flow will respond to new messages placed on the queue that we created in Task 3.
 
-1. Access [Microsoft Flow](https://flow.microsoft.com) and sign in
+1. Access [Microsoft Flow](https://flow.microsoft.com) and sign in (create an account if you don't already have one).
+
 2. From the left-hand menu, select **+ Create**, then choose **Instant flow**
 
    ![Create Instant Flow](media/create-flow-menu.png)
@@ -746,6 +709,7 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
    ![Create email notification action](media/create-flow-email-step.png)
 
 8. You may need to accept the terms and conditions of the SendGrid service, a free service that provides the underlying email capabilities of this email step.
+
 9. In the Send an email notification (v3) form, fill it out as follows, then press the **+ New Step** button.
 
    | Field      | Value                                                                                |
@@ -762,13 +726,13 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
 
 11. In the Delete message form, fill it out as follows, then press the **Save** button.
 
-| Field       | Value                                                                               |
-| ----------- | ----------------------------------------------------------------------------------- |
-| Queue Name  | flownotificationqueue                                                               |
-| Message ID  | _put cursor in the field, then press **Message ID** from the Dynamic Content menu_  |
-| Pop Receipt | _put cursor in the field, then press **Pop Receipt** from the Dynamic Content menu_ |
+    | Field       | Value                                                                               |
+    | ----------- | ----------------------------------------------------------------------------------- |
+    | Queue Name  | flownotificationqueue                                                               |
+    | Message ID  | _put cursor in the field, then press **Message ID** from the Dynamic Content menu_  |
+    | Pop Receipt | _put cursor in the field, then press **Pop Receipt** from the Dynamic Content menu_ |
 
-![Delete queue message form](media/create-flow-delete-message-form.png)
+    ![Delete queue message form](media/create-flow-delete-message-form.png)
 
 12. Microsoft will automatically name the Flow, you are able to edit this Flow in the future by selecting **My flows** from the left-hand menu
 
@@ -801,9 +765,10 @@ We will be using Microsoft Flow as a means to email the workforce in the field. 
 It is recommended that you never check in secrets, such as connection strings, into source control. One way to do this is to use settings files. The values stored in these files mimic environment values used in production. The local settings file is never checked into source control.
 
 1. Using Visual Studio Code, open the /Hands-on lab/Resources/FailurePredictionFunction folder.
+
 2. In this folder, create a new file named _local.settings.json_ and populate it with the values obtained in the previous task as follows, then save the file:
 
-   ```
+   ```json
    {
       "IsEncrypted": false,
       "Values": {
@@ -819,20 +784,24 @@ It is recommended that you never check in secrets, such as connection strings, i
 
 1. Observe the static _Run_ function, it identifies that the function will run every time the _iot-central-feed_ event hub receives a message. It also uses a specific Consumer Group, these are used when there is a possibility that more than one process may be utilizing the data received in the hub. This ensures that dependent processes receive all messages once - thus avoiding any contingency problems. The method receives an array (batch) of events from the hub on each execution, as well as an instance of a logger in case you wish to see values in the console (locally or in the cloud).
 
-   ```
+   ```c#
    public static async Task Run([EventHubTrigger("iot-central-feed", Connection = "fabrikam-oil_RootManageSharedAccessKey_EVENTHUB",
                                 ConsumerGroup = "ingressprocessing")] EventData[] events, ILogger log)
    ```
 
-2. On line 30, the message body received from the event is deserialized into a Telemetry object - the Telemetry class matches the telemetry sent by the pumps. The Telemetry class can be found in the Models/Telemetry.cs file.
+2. On line 30, the message body received from the event is deserialized into a Telemetry object - the Telemetry class matches the telemetry sent by the pumps. The Telemetry class can be found in the `Models/Telemetry.cs` file.
+
 3. On line 32, the device id is pulled from the system properties of the event. This will let us know from which device the telemetry data came from.
+
 4. TODO UPDATE ONCE FINALIZED: Lines X through X sends the received telemetry to the Prediction Model endpoint. This service will respond with a 1 - meaning the pump requires maintenance, or a 0 meaning no maintenance notifications should be sent.
+
 5. TODO UPDATE ONCE FINALIZED: Lines X through X checks Table storage to ensure a notification for the specific device hasn't been sent in the last 24 hours. If a notification is due to be sent, it will update the table storage record with the current timestamp and send a notification by queueing a message onto the _flownotificationqueue_ queue.
 
 ### Task 8: Run the Function App locally
 
 1. Press <kbd>Ctrl</kbd>+<kbd>F5</kbd> to run the Azure Function code.
-2. After some time, you should see log statements indicating that a message has been queued (indicating that Microsoft Flow will send a notification email)
+
+2. After some time, you should see log statements indicating that a message has been queued (indicating that Microsoft Flow will send a notification email).
 
    ![Azure Function Output](media/azure-function-output.png)
 
