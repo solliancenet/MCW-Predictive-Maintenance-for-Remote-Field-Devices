@@ -134,7 +134,7 @@ In this task, you will import the Databricks notebooks into your workspace.
 
    ![The Import link is highlighted in the Workspace.](media/databricks-import-link.png 'Workspace')
 
-2. Select **URL** next to **Import from**, paste the following into the text box: `https://github.com/solliancenet/MCW-Predictive-Maintenance-for-Remote-Field-Devices/blob/master/Hands-on%20lab/Resources/Notebooks/Anomaly-Detection.dbc`, then select **Import**.
+2. Select **URL** next to **Import from**, paste the following into the text box: `https://github.com/microsoft/MCW-Predictive-Maintenance-for-Remote-Field-Devices/blob/master/Hands-on%20lab/Resources/Notebooks/Anomaly-Detection.dbc`, then select **Import**.
 
    ![The URL has been entered in the import form.](media/databricks-import.png 'Import Notebooks')
 
