@@ -21,65 +21,90 @@ namespace Fabrikam.Oil.Pumps
                                 ConsumerGroup = "ingressprocessing")] EventData[] events, ILogger log)
         {
             var exceptions = new List<Exception>();
-            var randomGenerator = new Random();
-            foreach (EventData eventData in events)
+            var allTelemetry = new List<Telemetry>();
+
+            foreach (var eventData in events)
             {
-                try
-                {
-                    //deserialize message body into the Telemetry object
-                    var telemetry = JsonConvert.DeserializeObject<Telemetry>(
-                                Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count));
-                    var deviceId = (string)eventData.SystemProperties["iothub-connection-device-id"];                     
+                // Deserialize message body into the Telemetry object.
+                var telemetry = JsonConvert.DeserializeObject<Telemetry>(
+                    Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count));
+                telemetry.DeviceId = (string)eventData.SystemProperties["iothub-connection-device-id"];
+                allTelemetry.Add(telemetry);
+            }
 
-                    var restClient = new RestClient(Environment.GetEnvironmentVariable("PredictionModelEndpoint"));
-                    //temp - path 1 returns 1, path 0 returns 0
-                    var path = randomGenerator.Next(0,2);
-                    var modelRequest = new RestRequest(path.ToString());
-                    modelRequest.AddJsonBody(telemetry);
-                    var modelResult = restClient.ExecuteAsPost<int>(modelRequest,"POST");
-                    if(modelResult.Content == "1") 
+            try
+            {
+                // Group by Device ID and store the average sensor values.
+                var devices = from telemetry in allTelemetry
+                    group telemetry by telemetry.DeviceId
+                    into deviceGroup
+                    select new
                     {
-                        // impending failure detected from model - send notification 
+                        DeviceID = deviceGroup.Key,
+                        AverageMotorPowerkW = deviceGroup.Average(x => x.MotorPowerKw),
+                        AverageMotorSpeed = deviceGroup.Average(x => x.MotorSpeed),
+                        AveragePumpRate = deviceGroup.Average(x => x.PumpRate),
+                        AverageTimePumpOn = deviceGroup.Average(x => x.TimePumpOn),
+                        AverageCasingFriction = deviceGroup.Average(x => x.CasingFriction),
+                        Count = deviceGroup.Count()
+                    };
 
-                        //check when the device had its last notification   
-                        var cloudStorageAccount =  CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));                    
+                var restClient = new RestClient(Environment.GetEnvironmentVariable("PredictionModelEndpoint"));
+
+                foreach (var device in devices)
+                {
+                    var payload = new double[5];
+                    payload[0] = device.AverageMotorPowerkW;
+                    payload[1] = device.AverageMotorSpeed;
+                    payload[2] = device.AveragePumpRate;
+                    payload[3] = device.AverageTimePumpOn;
+                    payload[4] = device.AverageCasingFriction;
+
+                    var modelRequest = new RestRequest();
+                    modelRequest.AddJsonBody(payload);
+                    var modelResult = restClient.ExecuteAsPost<int>(modelRequest, "POST");
+                    if (modelResult.Content == "1")
+                    {
+                        // impending failure detected from model - send notification.
+
+                        // Check when the device had its last notification.
+                        var cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
                         var table = cloudStorageAccount.CreateCloudTableClient().GetTableReference("DeviceNotifications");
 
-                        var retrieveEntityOp = TableOperation.Retrieve<DeviceNotification>("Devices", deviceId);
+                        var retrieveEntityOp = TableOperation.Retrieve<DeviceNotification>("Devices", device.DeviceID);
                         var entity = (DeviceNotification)(await table.ExecuteAsync(retrieveEntityOp)).Result;
-                        bool isNewEntity = false;
-                        if(entity == null) 
+                        var isNewEntity = false;
+                        if (entity == null)
                         {
                             isNewEntity = true;
-                            entity = new DeviceNotification(deviceId);
-                            entity.LastNotificationUtc = DateTime.UtcNow;
+                            entity = new DeviceNotification(device.DeviceID) {LastNotificationUtc = DateTime.UtcNow};
                         }
 
                         var timeSpan = DateTime.UtcNow - entity.LastNotificationUtc;
-                        if(isNewEntity || timeSpan.Hours > 24)
+                        if (isNewEntity || timeSpan.Hours > 24)
                         {
-                            //if it has been greater than 24 hours - update the notification timestamp
+                            // if it has been greater than 24 hours - update the notification timestamp.
                             entity.LastNotificationUtc = DateTime.UtcNow;
                             var replaceEntityOp = TableOperation.InsertOrReplace(entity);
                             await table.ExecuteAsync(replaceEntityOp);
 
-                            //notify workforce via Microsoft Flow triggered by queue entry
+                            // Notify workforce via Microsoft Flow triggered by queue entry.
                             var queue = cloudStorageAccount.CreateCloudQueueClient().GetQueueReference("flownotificationqueue");
-                            StringBuilder message = new StringBuilder(deviceId +" has been flagged as requiring maintenance by the ");
-                                    message.Append("predictive maintenance system. ");
-                                    message.Append("Please visit this pump and return it to normal operating parameters.");
+                            var message = new StringBuilder(device.DeviceID + " has been flagged as requiring maintenance by the ");
+                            message.Append("predictive maintenance system. ");
+                            message.Append("Please visit this pump and return it to normal operating parameters.");
                             var queueMessage = new CloudQueueMessage(message.ToString());
                             await queue.AddMessageAsync(queueMessage);
-                            log.LogInformation($"Notification email for {deviceId} queued for delivery");
+                            log.LogInformation($"Notification email for {device.DeviceID} queued for delivery");
                         }
-                    }                    
+                    }
                 }
-                catch (Exception e)
-                {
-                    // We need to keep processing the rest of the batch - capture this exception and continue.
-                    // Also, consider capturing details of the message that failed processing so it can be processed again later.
-                    exceptions.Add(e);
-                }
+            }
+            catch (Exception e)
+            {
+                // We need to keep processing the rest of the batch - capture this exception and continue.
+                // Also, consider capturing details of the message that failed processing so it can be processed again later.
+                exceptions.Add(e);
             }
 
             // Once processing of the batch is complete, if any messages in the batch failed processing throw an exception so that 

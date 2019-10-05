@@ -2,6 +2,7 @@ namespace Fabrikam.Oil.Pumps
 {
     public class Telemetry 
     {
+        public string DeviceId { get; set; }
         public double MotorPowerKw { get; set; }
         public double MotorSpeed { get; set; }
         public double PumpRate { get; set; }
